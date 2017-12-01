@@ -1,12 +1,12 @@
 import sys
 
-def calculateSum(inputString):
+def calculateSum(inputString, distanceToNextDigit):
 	digits = list(inputString)
 	length = len(digits)
 	matchingDigits = 0
 
 	for thisIndex in range(0, length):
-		nextIndex = (thisIndex + 1) % length
+		nextIndex = (thisIndex + distanceToNextDigit) % length
 		thisDigit = digits[thisIndex]
 		nextDigit = digits[nextIndex]
 		if thisDigit == nextDigit:
@@ -15,13 +15,13 @@ def calculateSum(inputString):
 	return matchingDigits
 
 def runTests():
-	runTest('1122', 3)
-	runTest('1111', 4)
-	runTest('1234', 0)
-	runTest('91212129', 9)
+	runTest('1122', 1, 3)
+	runTest('1111', 1, 4)
+	runTest('1234', 1, 0)
+	runTest('91212129', 1, 9)
 
-def runTest(inputString, expected):
-	actual = calculateSum(inputString)
+def runTest(inputString, distanceToNextDigit, expected):
+	actual = calculateSum(inputString, distanceToNextDigit)
 	if actual != expected:
 		print('Failed on ' + inputString)
 		print('Expected ' + str(expected) + ' but got ' + str(actual))
@@ -30,4 +30,4 @@ def runTest(inputString, expected):
 if (sys.argv[1] == 'tests'):
 	runTests()
 else:
-	print calculateSum(sys.argv[1])
+	print calculateSum(sys.argv[1], 1)
