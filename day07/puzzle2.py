@@ -34,11 +34,6 @@ class Node:
 			towerWeight += nodes[childName].getTowerWeight(nodes)
 		return towerWeight
 
-	def getFirstChild(self, nodes):
-		if len(self.children) > 0:
-			return nodes[self.children[0]]
-		return None
-
 	def isBalanced(self, nodes):
 		if len(self.children) > 0:
 			childTowerWeights = []
