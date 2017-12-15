@@ -15,10 +15,7 @@ def toBinaryString(num):
 	return bin(num)[2:]
 
 def lower16BitsMatch(lhs, rhs):
-	for i in range(-1, -17, -1):
-		if lhs[i] != rhs[i]:
-			return False
-	return True
+	return lhs % 65536 == rhs % 65536
 
 
 def part1():
@@ -27,9 +24,7 @@ def part1():
 
 	matches = 0
 	for i in range(0, 40000000):
-		binaryStringA = toBinaryString(genA.next())
-		binaryStringB = toBinaryString(genB.next())
-		if lower16BitsMatch(binaryStringA, binaryStringB):
+		if lower16BitsMatch(genA.next(), genB.next()):
 			matches += 1
 
 	print 'Part 1: ' + str(matches)
@@ -40,9 +35,7 @@ def part2():
 
 	matches = 0
 	for i in range (0, 5000000):
-		binaryStringA = toBinaryString(genA.next())
-		binaryStringB = toBinaryString(genB.next())
-		if lower16BitsMatch(binaryStringA, binaryStringB):
+		if lower16BitsMatch(genA.next(), genB.next()):
 			matches += 1
 
 	print 'Part 2: ' + str(matches)
