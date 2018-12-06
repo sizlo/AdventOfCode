@@ -3,8 +3,10 @@ def solve(filename):
 		lines = file.read().splitlines()
 
 	fabric = []
-	for i in range(0, 1500):
-		fabric.append([0] * 1500)
+	for x in range(0, 1500):
+		fabric.append([])
+		for y in range(0, 1500):
+			fabric[x].append(0)
 
 	for line in lines:
 		parts = line.split(' ')
