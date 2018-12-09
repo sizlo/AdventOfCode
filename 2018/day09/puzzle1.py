@@ -6,26 +6,6 @@ class Marble:
 		self.next = None
 		self.score = 0
 
-def pad(inStr):
-	spaces = 5 - len(inStr)
-	for i in range(0, spaces):
-		inStr += ' '
-	return inStr
-
-def printGame(activePlayer, startMarble, currentMarble):
-	return
-	gameString = pad('[' + str(activePlayer) + ']')
-	thisMarble = startMarble
-	while True:
-		if thisMarble is currentMarble:
-			gameString += pad('(' + str(thisMarble.score) + ')')
-		else:
-			gameString += pad(str(thisMarble.score))
-		thisMarble = thisMarble.next
-		if thisMarble is startMarble:
-			break
-	print(gameString)
-
 def solve(filename, multiplier=1):
 	with open(filename) as file:
 		gameDefinition = file.read()
@@ -39,11 +19,8 @@ def solve(filename, multiplier=1):
 	currentMarble = Marble()
 	currentMarble.previous = currentMarble
 	currentMarble.next = currentMarble
-	startMarble = currentMarble
 
 	activePlayer = 0
-
-	printGame(0, startMarble, currentMarble)
 
 	for marbleScore in range(1, lastMarble + 1):
 		if marbleScore % 23 == 0:
@@ -64,7 +41,6 @@ def solve(filename, multiplier=1):
 			currentMarble.next = rhs
 			lhs.next = currentMarble
 			rhs.previous = currentMarble
-		printGame(activePlayer, startMarble, currentMarble)
 
 		activePlayer = (activePlayer + 1) % numPlayers
 
