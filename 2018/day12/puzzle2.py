@@ -42,12 +42,6 @@ def solve(filename):
 	history = []
 	history.append(state)
 
-	startIndexHistory = []
-	startIndexHistory.append(startIndex)
-
-	endIndexHistory = []
-	endIndexHistory.append(endIndex)
-
 	generation = 0
 	while True:
 		generation += 1
@@ -56,8 +50,6 @@ def solve(filename):
 		if state in history:
 			break
 		history.append(state)
-		startIndexHistory.append(startIndex)
-		endIndexHistory.append(endIndex)
 
 
 	# While debugging I noticed that at this point the pattern of plants is stable, but each plant moves along one index each generation.
