@@ -1,4 +1,5 @@
 import copy
+import time
 
 INFINITY = 9999999
 
@@ -17,7 +18,7 @@ COLOURS = [
 END_COLOUR = '\033[39m'
 nextColour = 0
 
-PRINT = False
+PRINT = True
 INTERACTIVE = False
 
 class Coordinate:
@@ -62,7 +63,7 @@ class Unit:
 
     def tick(self, spaces):
         if len(self.aliveEnemies()) == 0:
-            return None, True
+            return None, True, False
         
         targetSpaces = set()
         for enemy in self.aliveEnemies():
@@ -71,12 +72,14 @@ class Unit:
                     targetSpaces.add(TargetSpace(coordinate, enemy.colour))
 
         if len(targetSpaces) == 0:
-            return None, None
+            return None, None, False
+
+        didMove = False
 
         if self.position not in [targetSpace.coordinate for targetSpace in targetSpaces]:
-            self.move(targetSpaces, spaces)
-        
-        return self.attack(), None
+            didMove = self.move(targetSpaces, spaces)
+
+        return self.attack(), None, didMove
 
     def attack(self):
         lowestHealthEnemy = None
@@ -107,6 +110,9 @@ class Unit:
             self.position.y = bestNextSpace.y
             self.position.x = bestNextSpace.x
             spaces[self.position.y][self.position.x] = unitChar
+            return True
+
+        return False
 
     def aliveEnemies(self):
         return [enemy for enemy in self.enemies if enemy.health > 0]
@@ -140,6 +146,7 @@ class Map:
     def __str__(self):
         result = ''
         for y in range(0, self.height):
+            endOfLine = '\t'
             for x in range(0, self.width):
                 spaceString = self.spaces[y][x]
                 
@@ -147,16 +154,15 @@ class Map:
                     for unit in self.aliveUnits():
                         if unit.position == Coordinate(x, y):
                             spaceString = colour(spaceString, unit.colour)
+                            endOfLine += str(unit) + '\t'
 
                 result += spaceString
-            result += '\n'
-
-        for unit in self.aliveUnits():
-            result += str(unit) + '\n'
+            result +=  endOfLine + '\n'
 
         return result
 
     def tick(self):
+        aUnitMoved = False
         unitQueue = self.units.copy()
         while len(unitQueue) > 0:
             unitQueue.sort()
@@ -166,15 +172,18 @@ class Map:
             if unit.health <= 0:
                 continue
 
-            damagedUnit, combatEnded = unit.tick(self.spaces)
+            damagedUnit, combatEnded, didMove = unit.tick(self.spaces)
+
+            if didMove:
+                aUnitMoved = True
 
             if damagedUnit and damagedUnit.health <= 0:
                 self.spaces[damagedUnit.position.y][damagedUnit.position.x] = '.'
 
             if combatEnded:
-                return True
+                return True, aUnitMoved
 
-        return False
+        return False, aUnitMoved
 
     def aliveUnits(self):
         return [unit for unit in self.units if unit.health > 0]
@@ -270,11 +279,16 @@ def findDistanceToTargetAndNextSpace(currentCoordinate, targetCoordinate, spaces
         return graph[currentCoordinate].distance, bestNode.coordinate
     return INFINITY + 1, None
 
+def currentTime():
+    return int(round(time.time() * 1000))
+
 def tryAttackPower(mapString, attackPower):
     theMap = Map(mapString, attackPower)
     roundNumber = 0
     
     while True:
+        frameStart = currentTime()
+
         if PRINT or INTERACTIVE: 
             print('Round: ' + str(roundNumber))
             print(theMap)
@@ -282,7 +296,16 @@ def tryAttackPower(mapString, attackPower):
                 break
 
         roundNumber += 1
-        combatEnded = theMap.tick()
+        combatEnded, didMove = theMap.tick()
+
+        if (PRINT or INTERACTIVE):
+            frameEnd = currentTime()
+            frameTime = frameEnd - frameStart
+            desiredFrameTime = 200
+            if not didMove:
+                desiredFrameTime = 50
+            sleepTime = max(min(desiredFrameTime - frameTime, desiredFrameTime), 0)
+            time.sleep(sleepTime / 1000.0)
         
         for elf in theMap.elves:
             if elf.health <= 3:
