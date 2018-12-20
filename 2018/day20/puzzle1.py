@@ -165,8 +165,6 @@ def solve(filename):
     with open(filename) as file:
         regex = file.read()
 
-    print(filename)
-
     graph = buildGraph(regex)
 
     if not verifyGraph(graph):
