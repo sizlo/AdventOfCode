@@ -1,5 +1,3 @@
-import re
-
 class Coordinate:
 	def __init__(self, x, y):
 		self.x = x
@@ -38,65 +36,6 @@ class GraphNode:
 		if node not in self.reachable:
 			self.reachable.append(node)
 
-def generateRoutes(regex):
-	toReplace = regex[1:-1]
-	token = 0
-	replacements = []
-
-	while ('(') in toReplace:
-		print('Finding replacement for token ' + str(token))
-		matches = re.search('(\\([NSEWT|\\d]*\\))', toReplace)
-		firstMatch = matches.group(1)
-		options = firstMatch[1:-1].split('|')
-		replacements.append(options)
-		toReplace = toReplace.replace(firstMatch, 'T' + str(token), 1)
-		token += 1
-
-	routes = {toReplace}
-	while token  > 0:
-		token -= 1
-		print('Performing replacement for token ' + str(token))
-		newRoutes = set()
-		for route in routes:
-			for replacement in replacements[token]:
-				newRoutes.add(route.replace('T' + str(token), replacement))
-		routes = newRoutes
-
-	for route in routes:
-		print(route)
-
-	return list(routes)
-
-def buildGraph(routes):
-	graph = {}
-
-	for route in routes:
-		here = Coordinate(0, 0)
-		if here not in graph.keys():
-			graph[here] = GraphNode(here)
-
-		for direction in route:
-			if direction == 'N':
-				there = here.above()
-			elif direction == 'S':
-				there = here.below()
-			elif direction == 'W':
-				there = here.left()
-			elif direction == 'E':
-				there = here.right()
-			
-			if there not in graph.keys():
-				graph[there] = GraphNode(there)
-
-			hereNode = graph[here]
-			thereNode = graph[there]
-			hereNode.addReachable(thereNode)
-			thereNode.addReachable(hereNode)
-
-			here = there
-
-	return graph
-
 def buildGraph(regex):
 	branches = []
 	here = Coordinate(0, 0)
@@ -124,8 +63,6 @@ def buildGraph(regex):
 			print('ERROR: Unkown char ' + char)
 
 	return graph
-
-
 
 def verifyGraph(graph):
 	good = True
