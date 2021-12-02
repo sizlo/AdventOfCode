@@ -14,7 +14,9 @@ class SonarSweep {
     }
 
     private fun countIncrements(intList: List<Int>): Int {
-        return intList.windowed(2, 1).count { (a, b) -> b > a }
+        return intList
+                .zipWithNext()
+                .count { (previousDepth, currentDepth) -> currentDepth > previousDepth }
     }
 }
 
