@@ -20,6 +20,6 @@ class SonarSweep {
 
 fun main() {
     val input = readInput("/day01/input.txt").toIntList()
-    println(SonarSweep().part1(input))
-    println(SonarSweep().part2(input))
+    println(SonarSweep().part1(input)) // 1583
+    println(SonarSweep().part2(input)) // 1627
 }
