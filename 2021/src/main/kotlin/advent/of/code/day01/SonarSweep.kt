@@ -3,7 +3,7 @@ package advent.of.code.day01
 import advent.of.code.utils.readInput
 import advent.of.code.utils.toIntList
 
-class Day01 {
+class SonarSweep {
     fun part1(seaFloorDepths: List<Int>): Int {
         return countIncrements(seaFloorDepths)
     }
@@ -20,6 +20,6 @@ class Day01 {
 
 fun main() {
     val input = readInput("/day01/input.txt").toIntList()
-    println(Day01().part1(input))
-    println(Day01().part2(input))
+    println(SonarSweep().part1(input))
+    println(SonarSweep().part2(input))
 }

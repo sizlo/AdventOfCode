@@ -5,9 +5,9 @@ import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
-internal class Day01Test {
+internal class SonarSweepTest {
 
-    private lateinit var testSubject: Day01
+    private lateinit var testSubject: SonarSweep
 
     private val exampleInput = listOf(
             199,
@@ -24,7 +24,7 @@ internal class Day01Test {
 
     @BeforeEach
     fun setup() {
-        testSubject = Day01()
+        testSubject = SonarSweep()
     }
 
     @Test
