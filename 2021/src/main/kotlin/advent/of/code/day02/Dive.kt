@@ -1,32 +1,40 @@
 package advent.of.code.day02
 
+import advent.of.code.utils.Part
+import advent.of.code.utils.Part.PART_1
+import advent.of.code.utils.Part.PART_2
 import advent.of.code.utils.readInput
 
-class Dive {
+class Dive(private val part: Part) {
     val position = Position(depth = 0, horizontal = 0)
     private var aim = 0
 
-    fun applyCommandsForPart1(commands: List<String>) {
-        commands.forEach { command ->
-            val (direction, distance) = splitCommand(command)
-            when(direction) {
-                "forward" -> position.horizontal += distance
-                "down" -> position.depth += distance
-                "up" -> position.depth -= distance
-            }
+    fun applyCommands(commands: List<String>) {
+        commands
+                .map(::splitCommand)
+                .forEach { (direction, distance) ->
+                    when(part) {
+                        PART_1 -> move(direction, distance)
+                        PART_2 -> moveWithAim(direction, distance)
+                    }
+                }
+    }
+
+    private fun move(direction: String, distance: Int) {
+        when(direction) {
+            "forward" -> position.horizontal += distance
+            "down" -> position.depth += distance
+            "up" -> position.depth -= distance
         }
     }
 
-    fun applyCommandsForPart2(commands: List<String>) {
-        commands.forEach { command ->
-            val (direction,  distance) = splitCommand(command)
-            when(direction) {
-                "down" -> aim += distance
-                "up" -> aim -= distance
-                "forward" -> {
-                    position.horizontal += distance
-                    position.depth += aim * distance
-                }
+    private fun moveWithAim(direction: String, distance: Int) {
+        when(direction) {
+            "down" -> aim += distance
+            "up" -> aim -= distance
+            "forward" -> {
+                position.horizontal += distance
+                position.depth += aim * distance
             }
         }
     }
@@ -39,18 +47,18 @@ class Dive {
     }
 }
 
-data class Position(var depth:Int, var horizontal:Int) {
+data class Position(var depth: Int, var horizontal: Int) {
     fun multiply() = depth * horizontal
 }
 
 fun main() {
     val input = readInput("/day02/input.txt")
 
-    val diveForPart1 = Dive()
-    diveForPart1.applyCommandsForPart1(input)
+    val diveForPart1 = Dive(PART_1)
+    diveForPart1.applyCommands(input)
     println(diveForPart1.position.multiply()) // 1524750
 
-    val diveForPart2 = Dive()
-    diveForPart2.applyCommandsForPart2(input)
+    val diveForPart2 = Dive(PART_2)
+    diveForPart2.applyCommands(input)
     println(diveForPart2.position.multiply())// 1592426537
 }
