@@ -33,15 +33,15 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
     }
 
     private fun generateOxygenGeneratorRating(): Int {
-        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.MOST_COMMON).first().toInt(2)
+        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.MOST_COMMON)
     }
 
     private fun generateCo2ScrubberRating(): Int {
-        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.LEAST_COMMON).first().toInt(2)
+        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.LEAST_COMMON)
     }
 
-    private fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): List<String> {
-        if (binaryNumbers.size == 1) return binaryNumbers
+    private fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): Int {
+        if (binaryNumbers.size == 1) return binaryNumbers.first().toInt(2)
 
         val bitToKeep = if (bitCriteria == BitCriteria.MOST_COMMON) {
             binaryNumbers.findMostCommonBitAtIndex(index)
