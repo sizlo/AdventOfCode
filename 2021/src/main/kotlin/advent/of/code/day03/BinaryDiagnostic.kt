@@ -9,13 +9,17 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
         private const val ZERO = '0'
     }
 
-    enum class BitCriteria {
-        MOST_COMMON, LEAST_COMMON;
+    enum class BitCriteria { MOST_COMMON, LEAST_COMMON }
 
-        fun oneOrZeroBasedOnCounts(numOnes: Int, numZeros: Int): Char {
-            return when(this) {
-                MOST_COMMON -> if (numOnes >= numZeros) ONE else ZERO
-                LEAST_COMMON -> if (numZeros <= numOnes) ZERO else ONE
+    class BitsAtIndexCounter(binaryNumbers: List<String>, private val index: Int) {
+
+        private var numOnes: Int = binaryNumbers.map { it[index] }.count { it == ONE }
+        private var numZeros = binaryNumbers.size - numOnes
+
+        fun getBitForCriteria(bitCriteria: BitCriteria): Char {
+            return when(bitCriteria) {
+                BitCriteria.MOST_COMMON -> if (numOnes >= numZeros) ONE else ZERO
+                BitCriteria.LEAST_COMMON -> if (numZeros <= numOnes) ZERO else ONE
             }
         }
     }
@@ -34,8 +38,9 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
         var epsilonRateBinary = ""
 
         for (index in 0 until diagnosticBinaryNumbers.first().length) {
-            gammaRateBinary += diagnosticBinaryNumbers.findMostCommonBitAtIndex(index)
-            epsilonRateBinary += diagnosticBinaryNumbers.findLeastCommonBitAtIndex(index)
+            val bitsAtIndexCounter = BitsAtIndexCounter(diagnosticBinaryNumbers, index)
+            gammaRateBinary += bitsAtIndexCounter.getBitForCriteria(BitCriteria.MOST_COMMON)
+            epsilonRateBinary += bitsAtIndexCounter.getBitForCriteria(BitCriteria.LEAST_COMMON)
         }
 
         return Pair(gammaRateBinary.toInt(2), epsilonRateBinary.toInt(2))
@@ -52,28 +57,9 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
     private fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): Int {
         if (binaryNumbers.size == 1) return binaryNumbers.first().toInt(2)
 
-        val bitToKeep = if (bitCriteria == BitCriteria.MOST_COMMON) {
-            binaryNumbers.findMostCommonBitAtIndex(index)
-        } else {
-            binaryNumbers.findLeastCommonBitAtIndex(index)
-        }
-
+        val bitToKeep = BitsAtIndexCounter(binaryNumbers, index).getBitForCriteria(bitCriteria)
         val filteredNumbers = binaryNumbers.filter { it[index] == bitToKeep }
         return filterBasedOnBitCriteria(filteredNumbers, bitCriteria, index + 1)
-    }
-
-    private fun List<String>.findMostCommonBitAtIndex(index: Int): Char {
-        return this.findCommonBitAtIndexBasedOnBitCriteria(index, BitCriteria.MOST_COMMON)
-    }
-
-    private fun List<String>.findLeastCommonBitAtIndex(index: Int): Char {
-        return this.findCommonBitAtIndexBasedOnBitCriteria(index, BitCriteria.LEAST_COMMON)
-    }
-
-    private fun List<String>.findCommonBitAtIndexBasedOnBitCriteria(index: Int, bitCriteria: BitCriteria): Char {
-        val numOnes = this.map { it[index] }.count { it == ONE }
-        val numZeros = this.size - numOnes
-        return bitCriteria.oneOrZeroBasedOnCounts(numOnes, numZeros)
     }
 }
 
