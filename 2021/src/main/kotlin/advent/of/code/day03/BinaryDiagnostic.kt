@@ -54,7 +54,7 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
         return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.LEAST_COMMON)
     }
 
-    private fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): Int {
+    private tailrec fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): Int {
         if (binaryNumbers.size == 1) return binaryNumbers.first().toInt(2)
 
         val bitToKeep = BitsAtIndexCounter(binaryNumbers, index).getBitForCriteria(bitCriteria)
