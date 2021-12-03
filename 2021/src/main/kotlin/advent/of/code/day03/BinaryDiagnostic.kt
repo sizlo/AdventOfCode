@@ -25,40 +25,32 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
         var epsilonRateBinary = ""
 
         for (index in 0 until diagnosticBinaryNumbers.first().length) {
-            if (diagnosticBinaryNumbers.findMostCommonBitAtIndex(index) == ONE) {
-                gammaRateBinary += ONE
-                epsilonRateBinary += ZERO
-            } else {
-                gammaRateBinary += ZERO
-                epsilonRateBinary += ONE
-            }
+            gammaRateBinary += diagnosticBinaryNumbers.findMostCommonBitAtIndex(index)
+            epsilonRateBinary += diagnosticBinaryNumbers.findLeastCommonBitAtIndex(index)
         }
 
         return Pair(gammaRateBinary.toInt(2), epsilonRateBinary.toInt(2))
     }
 
     private fun generateOxygenGeneratorRating(): Int {
-        return filterBasedOnBitCriteria(BitCriteria.MOST_COMMON)
+        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.MOST_COMMON).first().toInt(2)
     }
 
     private fun generateCo2ScrubberRating(): Int {
-        return filterBasedOnBitCriteria(BitCriteria.LEAST_COMMON)
+        return filterBasedOnBitCriteria(diagnosticBinaryNumbers, BitCriteria.LEAST_COMMON).first().toInt(2)
     }
 
-    private fun filterBasedOnBitCriteria(bitCriteria: BitCriteria): Int {
-        var filteredDiagnosticBinaryNumbers = diagnosticBinaryNumbers.toMutableList()
-        for (index in 0 until diagnosticBinaryNumbers.first().length) {
-            if (filteredDiagnosticBinaryNumbers.size == 1) break
+    private fun filterBasedOnBitCriteria(binaryNumbers: List<String>, bitCriteria: BitCriteria, index: Int = 0): List<String> {
+        if (binaryNumbers.size == 1) return binaryNumbers
 
-            val bitToKeep = if (bitCriteria == BitCriteria.MOST_COMMON) {
-                filteredDiagnosticBinaryNumbers.findMostCommonBitAtIndex(index)
-            } else {
-                filteredDiagnosticBinaryNumbers.findLeastCommonBitAtIndex(index)
-            }
-
-            filteredDiagnosticBinaryNumbers = filteredDiagnosticBinaryNumbers.filter { it[index] == bitToKeep }.toMutableList()
+        val bitToKeep = if (bitCriteria == BitCriteria.MOST_COMMON) {
+            binaryNumbers.findMostCommonBitAtIndex(index)
+        } else {
+            binaryNumbers.findLeastCommonBitAtIndex(index)
         }
-        return filteredDiagnosticBinaryNumbers.first().toInt(2)
+
+        val filteredNumbers = binaryNumbers.filter { it[index] == bitToKeep }
+        return filterBasedOnBitCriteria(filteredNumbers, bitCriteria, index + 1)
     }
 
     private fun List<String>.findMostCommonBitAtIndex(index: Int): Char {
