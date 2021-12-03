@@ -9,7 +9,16 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
         private const val ZERO = '0'
     }
 
-    enum class BitCriteria { MOST_COMMON, LEAST_COMMON }
+    enum class BitCriteria {
+        MOST_COMMON, LEAST_COMMON;
+
+        fun oneOrZeroBasedOnCounts(numOnes: Int, numZeros: Int): Char {
+            return when(this) {
+                MOST_COMMON -> if (numOnes >= numZeros) ONE else ZERO
+                LEAST_COMMON -> if (numZeros <= numOnes) ZERO else ONE
+            }
+        }
+    }
     
     fun getPowerConsumption(): Int {
         val (gammaRate, epsilonRate) = generateGammaAndEpsilon(diagnosticBinaryNumbers)
@@ -54,23 +63,17 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
     }
 
     private fun List<String>.findMostCommonBitAtIndex(index: Int): Char {
-        val numOnes = this.countOnesAtIndex(index)
-        val numZeros = this.size - numOnes
-        if (numOnes > numZeros) return ONE
-        if (numZeros > numOnes) return ZERO
-        return ONE
+        return this.findCommonBitAtIndexBasedOnBitCriteria(index, BitCriteria.MOST_COMMON)
     }
 
     private fun List<String>.findLeastCommonBitAtIndex(index: Int): Char {
-        val numOnes = this.countOnesAtIndex(index)
-        val numZeros = this.size - numOnes
-        if (numOnes < numZeros) return ONE
-        if (numZeros < numOnes) return ZERO
-        return ZERO
+        return this.findCommonBitAtIndexBasedOnBitCriteria(index, BitCriteria.LEAST_COMMON)
     }
 
-    private fun List<String>.countOnesAtIndex(index: Int): Int {
-        return this.map { it[index] }.count { it == ONE }
+    private fun List<String>.findCommonBitAtIndexBasedOnBitCriteria(index: Int, bitCriteria: BitCriteria): Char {
+        val numOnes = this.map { it[index] }.count { it == ONE }
+        val numZeros = this.size - numOnes
+        return bitCriteria.oneOrZeroBasedOnCounts(numOnes, numZeros)
     }
 }
 
