@@ -11,7 +11,7 @@ class Lanternfish(input: List<Int>) {
         }.toMutableList()
 
     fun simulate(days: Int) {
-        for (day in 0 until days) {
+        repeat(days) {
             val fishReadyToMultiply = fishCounts[0]
             for (index in 0..7) {
                 fishCounts[index] = fishCounts[index + 1]
