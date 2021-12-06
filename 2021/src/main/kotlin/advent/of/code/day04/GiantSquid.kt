@@ -83,8 +83,8 @@ class GiantSquid {
         val scores = mutableListOf<Int>()
         for (drawnNumber in drawnNumbers) {
             val boardsStillPlaying = boards.filter { !it.isVictorious() }
-            boardsStillPlaying.forEach { it.markCellsWithValue(drawnNumber) }
             boardsStillPlaying
+                .onEach { it.markCellsWithValue(drawnNumber) }
                 .filter { it.isVictorious() }
                 .map { it.calculateUnmarkedCellScore() * drawnNumber }
                 .forEach { scores.add(it) }
