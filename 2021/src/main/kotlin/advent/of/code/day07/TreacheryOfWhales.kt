@@ -47,10 +47,6 @@ class TreacheryOfWhales(part: Part) {
 
 fun main() {
     val input = readInputAsOneListOfIntegers("/day07/input.txt")
-
-    val treacheryOfWhalesForPart1 = TreacheryOfWhales(PART_1)
-    val treacheryOfWhalesForPart2 = TreacheryOfWhales(PART_2)
-
-    println(treacheryOfWhalesForPart1.findMinimumFuelNeededToAlign(input)) // 355150
-    println(treacheryOfWhalesForPart2.findMinimumFuelNeededToAlign(input)) // 98368490
+    println(TreacheryOfWhales(PART_1).findMinimumFuelNeededToAlign(input)) // 355150
+    println(TreacheryOfWhales(PART_2).findMinimumFuelNeededToAlign(input)) // 98368490
 }
