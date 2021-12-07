@@ -41,8 +41,7 @@ class TreacheryOfWhales(part: Part) {
         val maxStartingPosition = crabPositions.maxOf { it }
 
         return (minStartingPosition..maxStartingPosition)
-            .map { fuelUsageCalculator.calculateFuelNeededToAlignToPosition(crabPositions, it) }
-            .minOf { it }
+            .minOf { fuelUsageCalculator.calculateFuelNeededToAlignToPosition(crabPositions, it) }
     }
 }
 
