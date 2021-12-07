@@ -1,7 +1,6 @@
 package advent.of.code.day06
 
-import advent.of.code.utils.readInput
-import advent.of.code.utils.toIntList
+import advent.of.code.utils.readInputAsOneListOfIntegers
 
 class Lanternfish(input: List<Int>) {
 
@@ -27,7 +26,7 @@ class Lanternfish(input: List<Int>) {
 }
 
 fun main() {
-    val input = readInput("/day06/input.txt")[0].split(",").toIntList()
+    val input = readInputAsOneListOfIntegers("/day06/input.txt")
 
     val lanternfishForPart1 = Lanternfish(input)
     lanternfishForPart1.simulate(days = 80)

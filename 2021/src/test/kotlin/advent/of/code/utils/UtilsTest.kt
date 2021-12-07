@@ -21,4 +21,11 @@ internal class UtilsTest {
 
         assertThat(result).containsExactly("line one", "line two", "line three")
     }
+
+    @Test
+    fun `test read input as one list of integers`() {
+        val result = readInputAsOneListOfIntegers("/test-ints.txt")
+
+        assertThat(result).containsExactly(1, 2, 3, 2, 1)
+    }
 }
