@@ -28,48 +28,48 @@ class SevenSegmentSearch(input: List<String>) {
 
         private fun decodeSignalPatterns(): Map<String, String> {
             // 1 is the only 2 letter signal pattern
-            val incorrect1SignalPattern = signalPatterns.ofLength(2)[0]
+            val incorrect1SignalPattern = signalPatterns.ofLength(2).single()
 
             // 4 is the only 4 letter signal pattern
-            val incorrect4SignalPattern = signalPatterns.ofLength(4)[0]
+            val incorrect4SignalPattern = signalPatterns.ofLength(4).single()
 
             // 7 is the only 3 letter signal pattern
-            val incorrect7SignalPattern = signalPatterns.ofLength(3)[0]
+            val incorrect7SignalPattern = signalPatterns.ofLength(3).single()
 
             // 8 is the only 7 letter signal pattern
-            val incorrect8SignalPattern = signalPatterns.ofLength(7)[0]
+            val incorrect8SignalPattern = signalPatterns.ofLength(7).single()
 
-            // a is the only segment in 7 but not 1
-            val incorrectA = incorrect7SignalPattern.minusAllCharsFrom(incorrect1SignalPattern)[0]
+            // 'a' is the only segment in 7 but not 1
+            val incorrectA = incorrect7SignalPattern.minusAllCharsFrom(incorrect1SignalPattern).single()
 
-            // f is the only segment that is present in 9 segments
+            // 'f' is the only segment that is present in 9 signal patterns
             val incorrectF = signalPatterns
                 .flatMap { it.toList() }
                 .groupBy { it }
                 .filter { it.value.size == 9 }
                 .map { it.key }
-                .first()
+                .single()
 
-            // c is the only other segment in 1 that is not f
-            val incorrectC = incorrect1SignalPattern.minusChar(incorrectF).first()
+            // 'c' is the only other segment in 1 that is not 'f'
+            val incorrectC = incorrect1SignalPattern.minusChar(incorrectF).single()
 
-            // 2 is the only 5 letter signal pattern without an f
-            val incorrect2SignalPattern = signalPatterns.ofLength(5).notContaining(incorrectF)[0]
+            // 2 is the only 5 letter signal pattern without an 'f'
+            val incorrect2SignalPattern = signalPatterns.ofLength(5).notContaining(incorrectF).single()
 
-            // 5 is the only 5 letter signal pattern without a c
-            val incorrect5SignalPattern = signalPatterns.ofLength(5).notContaining(incorrectC)[0]
+            // 5 is the only 5 letter signal pattern without a 'c'
+            val incorrect5SignalPattern = signalPatterns.ofLength(5).notContaining(incorrectC).single()
 
-            // 3 is the only 5 letter signal pattern that contains a c and f
-            val incorrect3SignalPattern = signalPatterns.ofLength(5).containingAll(incorrectA, incorrectC, incorrectF)[0]
+            // 3 is the only 5 letter signal pattern that contains 'a', 'c' and 'f'
+            val incorrect3SignalPattern = signalPatterns.ofLength(5).containingAll(incorrectA, incorrectC, incorrectF).single()
 
-            // 6 is the only 6 letter signal pattern without a c
-            val incorrect6SignalPattern = signalPatterns.ofLength(6).notContaining(incorrectC)[0]
+            // 6 is the only 6 letter signal pattern without a 'c'
+            val incorrect6SignalPattern = signalPatterns.ofLength(6).notContaining(incorrectC).single()
 
-            // e is the only segment in 2 but not in 3
-            val incorrectE = incorrect2SignalPattern.minusAllCharsFrom(incorrect3SignalPattern)[0]
+            // 'e' is the only segment in 2 but not in 3
+            val incorrectE = incorrect2SignalPattern.minusAllCharsFrom(incorrect3SignalPattern).single()
 
-            // 9 is the only 6 letter signal pattern without an e
-            val incorrect9SignalPattern = signalPatterns.ofLength(6).notContaining(incorrectE)[0]
+            // 9 is the only 6 letter signal pattern without an 'e'
+            val incorrect9SignalPattern = signalPatterns.ofLength(6).notContaining(incorrectE).single()
 
             // 0 is the only 6 letter signal pattern left
             val incorrect0SignalPattern = signalPatterns
