@@ -1,10 +1,11 @@
 package advent.of.code.day09
 
+import advent.of.code.utils.Coordinate
 import advent.of.code.utils.readInput
 
 class SmokeBasin(input: List<String>) {
 
-    class Cell(private val x: Int, private val y: Int, val heightValue: Int, private val heightMap: HeightMap) {
+    class Cell(private val coordinate: Coordinate, val heightValue: Int, private val heightMap: HeightMap) {
         fun isLowPoint(): Boolean {
             return getAllNeighbours().all { neighbour -> this.heightValue < neighbour.heightValue }
         }
@@ -23,15 +24,9 @@ class SmokeBasin(input: List<String>) {
         }
 
         private fun getAllNeighbours(): List<Cell> {
-            val neighbourCoordinates = listOf(
-                Pair(x - 1, y),
-                Pair(x + 1, y),
-                Pair(x, y - 1),
-                Pair(x, y + 1),
-            )
-
-            return neighbourCoordinates
-                .mapNotNull { (neighbourX, neighbourY) -> heightMap.getCellAt(neighbourX, neighbourY) }
+            return coordinate
+                .getNeighbourCoordinates()
+                .mapNotNull {  heightMap.getCellAt(it) }
         }
     }
 
@@ -44,7 +39,7 @@ class SmokeBasin(input: List<String>) {
         init {
             input.forEachIndexed { y, row ->
                 row.toList().map { it.digitToInt() }.forEachIndexed { x, heightValue ->
-                    this.cells.add(Cell(x, y, heightValue, this))
+                    this.cells.add(Cell(Coordinate(x, y), heightValue, this))
                 }
             }
             this.cellsPerRow = input[0].length
@@ -55,9 +50,11 @@ class SmokeBasin(input: List<String>) {
             return cells.filter { it.isLowPoint() }
         }
 
-        fun getCellAt(x: Int, y: Int): Cell? {
-            if (x < 0 || y < 0 || x >= cellsPerRow || y >= numRows) return null
-            return cells[y * cellsPerRow + x]
+        fun getCellAt(coordinate: Coordinate): Cell? {
+            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= cellsPerRow || coordinate.y >= numRows) {
+                return null
+            }
+            return cells[coordinate.y * cellsPerRow + coordinate.x]
         }
     }
 

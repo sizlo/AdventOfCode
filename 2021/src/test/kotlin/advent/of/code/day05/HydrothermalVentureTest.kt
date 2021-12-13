@@ -1,7 +1,7 @@
 package advent.of.code.day05
 
-import advent.of.code.day05.HydrothermalVenture.Coordinate
 import advent.of.code.day05.HydrothermalVenture.Line
+import advent.of.code.utils.Coordinate
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo

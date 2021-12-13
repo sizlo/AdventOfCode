@@ -1,6 +1,7 @@
 package advent.of.code.day09
 
 import advent.of.code.day09.SmokeBasin.HeightMap
+import advent.of.code.utils.Coordinate
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
@@ -40,20 +41,20 @@ internal class SmokeBasinTest {
 
         @Test
         fun `test parsing input`() {
-            assertThat(testSubject.getCellAt(0, 0)?.heightValue).isEqualTo(2)
-            assertThat(testSubject.getCellAt(9, 0)?.heightValue).isEqualTo(0)
-            assertThat(testSubject.getCellAt(0, 4)?.heightValue).isEqualTo(9)
-            assertThat(testSubject.getCellAt(9, 4)?.heightValue).isEqualTo(8)
-            assertThat(testSubject.getCellAt(2, 2)?.heightValue).isEqualTo(5)
-            assertThat(testSubject.getCellAt(5, 3)?.heightValue).isEqualTo(9)
+            assertThat(testSubject.getCellAt(Coordinate(0, 0))?.heightValue).isEqualTo(2)
+            assertThat(testSubject.getCellAt(Coordinate(9, 0))?.heightValue).isEqualTo(0)
+            assertThat(testSubject.getCellAt(Coordinate(0, 4))?.heightValue).isEqualTo(9)
+            assertThat(testSubject.getCellAt(Coordinate(9, 4))?.heightValue).isEqualTo(8)
+            assertThat(testSubject.getCellAt(Coordinate(2, 2))?.heightValue).isEqualTo(5)
+            assertThat(testSubject.getCellAt(Coordinate(5, 3))?.heightValue).isEqualTo(9)
         }
 
         @Test
         fun `should return null for out of bounds coordinates` () {
-            assertThat(testSubject.getCellAt(-1, 0)).isNull()
-            assertThat(testSubject.getCellAt(10, 0)).isNull()
-            assertThat(testSubject.getCellAt(0, -1)).isNull()
-            assertThat(testSubject.getCellAt(0, 5)).isNull()
+            assertThat(testSubject.getCellAt(Coordinate(-1, 0))).isNull()
+            assertThat(testSubject.getCellAt(Coordinate(10, 0))).isNull()
+            assertThat(testSubject.getCellAt(Coordinate(0, -1))).isNull()
+            assertThat(testSubject.getCellAt(Coordinate(0, 5))).isNull()
         }
     }
 }

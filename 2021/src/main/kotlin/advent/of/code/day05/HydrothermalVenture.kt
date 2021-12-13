@@ -1,14 +1,12 @@
 package advent.of.code.day05
 
+import advent.of.code.utils.Coordinate
 import advent.of.code.utils.readInput
-import advent.of.code.utils.toIntList
 import kotlin.math.abs
 
 class HydrothermalVenture(input: List<String>) {
 
     private val lines = input.map(::parseLine)
-
-    data class Coordinate(val x: Int, val y: Int)
 
     class Line(private val endpoints: Pair<Coordinate, Coordinate>) {
 
@@ -59,8 +57,7 @@ class HydrothermalVenture(input: List<String>) {
     private fun parseLine(string: String): Line {
         val coordinates = string
             .split(" -> ")
-            .map { it.split(",").toIntList() }
-            .map { Coordinate(it[0], it[1]) }
+            .map { Coordinate(it) }
         return Line(Pair(coordinates[0], coordinates[1]))
     }
 }
