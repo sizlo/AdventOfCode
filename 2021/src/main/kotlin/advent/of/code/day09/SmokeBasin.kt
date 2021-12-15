@@ -1,11 +1,15 @@
 package advent.of.code.day09
 
 import advent.of.code.utils.Coordinate
+import advent.of.code.utils.Grid
+import advent.of.code.utils.GridItem
 import advent.of.code.utils.readInput
 
 class SmokeBasin(input: List<String>) {
 
-    class Cell(private val coordinate: Coordinate, val heightValue: Int, private val heightMap: HeightMap) {
+    class Cell(coordinate: Coordinate, private val heightValue: Int, heightMap: HeightMap)
+        : GridItem<Cell>(coordinate = coordinate, grid = heightMap) {
+
         fun isLowPoint(): Boolean {
             return getAllNeighbours().all { neighbour -> this.heightValue < neighbour.heightValue }
         }
@@ -22,39 +26,20 @@ class SmokeBasin(input: List<String>) {
 
             return basin
         }
-
-        private fun getAllNeighbours(): List<Cell> {
-            return coordinate
-                .getNeighbourCoordinates()
-                .mapNotNull {  heightMap.getCellAt(it) }
-        }
     }
 
-    class HeightMap(input: List<String>) {
-
-        private val cells = mutableListOf<Cell>()
-        private val cellsPerRow: Int
-        private val numRows: Int
+    class HeightMap(input: List<String>): Grid<Cell>(width = input[0].length, height = input.size) {
 
         init {
             input.forEachIndexed { y, row ->
                 row.toList().map { it.digitToInt() }.forEachIndexed { x, heightValue ->
-                    this.cells.add(Cell(Coordinate(x, y), heightValue, this))
+                    this.items.add(Cell(Coordinate(x, y), heightValue, this))
                 }
             }
-            this.cellsPerRow = input[0].length
-            this.numRows = input.size
         }
 
         fun getLowPoints(): List<Cell> {
-            return cells.filter { it.isLowPoint() }
-        }
-
-        fun getCellAt(coordinate: Coordinate): Cell? {
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= cellsPerRow || coordinate.y >= numRows) {
-                return null
-            }
-            return cells[coordinate.y * cellsPerRow + coordinate.x]
+            return items.filter { it.isLowPoint() }
         }
     }
 

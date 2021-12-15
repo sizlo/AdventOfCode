@@ -1,11 +1,14 @@
 package advent.of.code.day11
 
 import advent.of.code.utils.Coordinate
+import advent.of.code.utils.Grid
+import advent.of.code.utils.GridItem
 import advent.of.code.utils.readInput
 
 class DumboOctopus {
 
-    class Octopus(var energy: Int, private val coordinate: Coordinate, private val octopusGrid: OctopusGrid) {
+    class Octopus(var energy: Int, coordinate: Coordinate, octopusGrid: OctopusGrid)
+        : GridItem<Octopus>(coordinate = coordinate, grid = octopusGrid) {
 
         var numFlashes = 0
 
@@ -14,7 +17,7 @@ class DumboOctopus {
 
             if (energy == 10) {
                 numFlashes++
-                getAllNeighbours().forEach { it.incrementEnergy() }
+                getAllNeighbours(includeDiagonals = true).forEach { it.incrementEnergy() }
             }
         }
 
@@ -23,44 +26,27 @@ class DumboOctopus {
                 energy = 0
             }
         }
-
-        private fun getAllNeighbours(): List<Octopus> {
-            return coordinate
-                .getNeighbourCoordinates(includeDiagonals = true)
-                .mapNotNull { octopusGrid.getOctopusAt(it) }
-        }
     }
 
-    class OctopusGrid(input: List<String>) {
-
-        private val octopuses = mutableListOf<Octopus>()
+    class OctopusGrid(input: List<String>): Grid<Octopus>(width = input.size, height = input.size) {
 
         init {
             input.forEachIndexed { y, row ->
                 row.toList().map { it.digitToInt() }.forEachIndexed { x, energy ->
-                    this.octopuses.add(Octopus(energy, Coordinate(x, y), this))
+                    this.items.add(Octopus(energy, Coordinate(x, y), this))
                 }
             }
         }
 
-        private val gridSize = input.size
-
         fun doStep() {
-            octopuses
+            items
                 .onEach { it.incrementEnergy() }
                 .onEach { it.resetEnergy() }
         }
 
-        fun getOctopusAt(coordinate: Coordinate): Octopus? {
-            if (coordinate.x < 0 || coordinate.y < 0 || coordinate.x >= gridSize || coordinate.y >= gridSize) {
-                return null
-            }
-            return octopuses[coordinate.y * gridSize + coordinate.x]
-        }
+        fun getTotalFlashes(): Int = items.sumOf { it.numFlashes }
 
-        fun getTotalFlashes(): Int = octopuses.sumOf { it.numFlashes }
-
-        fun allHaveFlashedOnThisStep(): Boolean = octopuses.all { it.energy == 0 }
+        fun allHaveFlashedOnThisStep(): Boolean = items.all { it.energy == 0 }
     }
 
     fun getTotalFlashesAfter100Steps(input: List<String>): Int {
