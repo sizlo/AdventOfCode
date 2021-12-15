@@ -1,6 +1,6 @@
 package advent.of.code.utils
 
-open class GridItem<T>(private val coordinate: Coordinate, private val grid: Grid<T>) {
+open class GridItem<T>(val coordinate: Coordinate, private val grid: Grid<T>) {
     fun getAllNeighbours(includeDiagonals: Boolean = false): List<T> {
         return coordinate
             .getNeighbourCoordinates(includeDiagonals)
@@ -9,8 +9,8 @@ open class GridItem<T>(private val coordinate: Coordinate, private val grid: Gri
 }
 
 open class Grid<T>(
-    private val width: Int,
-    private val height: Int,
+    protected val width: Int,
+    protected val height: Int,
     protected val items: MutableList<T> = mutableListOf()
 ) {
 
