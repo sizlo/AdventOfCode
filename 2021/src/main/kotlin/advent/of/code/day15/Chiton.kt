@@ -3,7 +3,7 @@ package advent.of.code.day15
 import advent.of.code.utils.*
 import advent.of.code.utils.Part.PART_1
 import advent.of.code.utils.Part.PART_2
-import java.time.LocalTime
+import java.util.*
 import kotlin.system.measureTimeMillis
 
 typealias Tile = List<List<Int>>
@@ -25,56 +25,54 @@ fun Tile.joinBottom(btm: Tile): Tile {
 
 class Chiton(private val part: Part) {
 
-    class RiskLevel(coordinate: Coordinate, riskLevelMap: RiskLevelMap, val riskLevel: Int)
-        : GridItem<RiskLevel>(coordinate = coordinate, grid = riskLevelMap)
+    class RiskLevelMap(input: List<String>): Grid<Int>(width = input.first().length, height = input.size) {
 
-    class RiskLevelMap(input: List<String>): Grid<RiskLevel>(width = input.first().length, height = input.size) {
         init {
-            input.forEachIndexed { y, row ->
-                row.toList().map { it.digitToInt() }.forEachIndexed { x, riskLevel ->
-                    items.add(RiskLevel(Coordinate(x, y), this, riskLevel))
-                }
+            input.forEach { row ->
+                row.forEach { items.add(it.digitToInt()) }
             }
         }
 
         fun findLowestPathRisk(): Int {
-            val unvisited = items.toMutableSet()
-            val distances = items.associateWith { Int.MAX_VALUE }.toMutableMap()
+            val allCoordinates = (0 until height)
+                .flatMap { y ->
+                    (0 until width).map { x ->
+                        Coordinate(x, y)
+                    }
+                }
 
-            val start = getItemAt(Coordinate(0, 0))!!
-            val end = getItemAt(Coordinate(width - 1, height - 1))!!
+            val start = Coordinate(0, 0)
+            val end = Coordinate(width - 1, height - 1)
+
+            val distances = allCoordinates.associateWith { Int.MAX_VALUE }.toMutableMap()
+            val unvisited = PriorityQueue<Coordinate> { a, b -> distances[a]!! - distances[b]!! }
+            allCoordinates.forEach { unvisited.add(it) }
+
             distances[start] = 0
 
-            var lastPrintedProgressPercent = Int.MIN_VALUE
-
             while (unvisited.contains(end)) {
-                val current = distances
-                    .filter { unvisited.contains((it.key)) }
-                    .minByOrNull { it.value }!!
-                    .key
+                val current = unvisited.poll()!!
 
                 current
-                    .getAllNeighbours()
+                    .getNeighbourCoordinates()
                     .filter { unvisited.contains(it) }
                     .forEach { neighbour ->
-                        val distanceToCurrent = neighbour.riskLevel + distances.of(current)
-                        distances[neighbour] = minOf(distanceToCurrent, distances.of(neighbour))
-                    }
-                unvisited.remove(current)
+                        val distanceToCurrent = getItemAt(neighbour)!! + distances[current]!!
+                        if (distanceToCurrent < distances[neighbour]!!) {
+                            distances[neighbour] = distanceToCurrent
 
-                val visited = items.size - unvisited.size
-                val progressPercent = ((visited.toDouble() / items.size.toDouble()) * 100).toInt()
-                if (progressPercent > lastPrintedProgressPercent) {
-                    println("${LocalTime.now()} Progress: $visited / ${items.size}     ${progressPercent}%")
-                    lastPrintedProgressPercent = progressPercent
-                }
+                            // Adjust-priority
+                            unvisited.remove(neighbour)
+                            unvisited.add(neighbour)
+                        }
+                    }
             }
 
-            return distances.of(end)
+            return distances[end]!!
         }
-
-        private fun MutableMap<RiskLevel, Int>.of(key: RiskLevel): Int = this[key]!!
     }
+
+
 
     fun findLowestPathRisk(input: List<String>): Int {
         return when (part) {
