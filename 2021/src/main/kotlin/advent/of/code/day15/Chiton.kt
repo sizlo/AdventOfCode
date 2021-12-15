@@ -113,9 +113,9 @@ fun main() {
     val part1 = Chiton(PART_1).findLowestPathRisk(input) // 745
     println("Part 1 result: $part1")
 
-    val timeinMillis = measureTimeMillis {
+    val timeInMillis = measureTimeMillis {
         val part2 = Chiton(PART_2).findLowestPathRisk(input) // 3002
         println("Part 2 result: $part2")
     }
-    println("Part 2 took ${timeinMillis}ms to find")
+    println("Part 2 took ${timeInMillis}ms to find")
 }
