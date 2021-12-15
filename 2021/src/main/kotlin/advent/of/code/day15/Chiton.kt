@@ -45,25 +45,24 @@ class Chiton(private val part: Part) {
             val end = Coordinate(width - 1, height - 1)
 
             val distances = allCoordinates.associateWith { Int.MAX_VALUE }.toMutableMap()
-            val unvisited = PriorityQueue<Coordinate> { a, b -> distances[a]!! - distances[b]!! }
-            allCoordinates.forEach { unvisited.add(it) }
+            val visited = allCoordinates.associateWith { false }.toMutableMap()
+            val queue = PriorityQueue<Coordinate> { a, b -> distances[a]!! - distances[b]!! }
+            queue.add(start)
 
             distances[start] = 0
 
-            while (unvisited.contains(end)) {
-                val current = unvisited.poll()!!
+            while (visited[end] == false) {
+                val current = queue.poll()!!
+                visited[current] = true
 
                 current
                     .getNeighbourCoordinates()
-                    .filter { unvisited.contains(it) }
+                    .filter { visited[it] == false }
                     .forEach { neighbour ->
                         val distanceToCurrent = getItemAt(neighbour)!! + distances[current]!!
                         if (distanceToCurrent < distances[neighbour]!!) {
                             distances[neighbour] = distanceToCurrent
-
-                            // Adjust-priority
-                            unvisited.remove(neighbour)
-                            unvisited.add(neighbour)
+                            queue.add(neighbour)
                         }
                     }
             }
