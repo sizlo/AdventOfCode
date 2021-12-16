@@ -2,6 +2,7 @@ package advent.of.code.utils
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
+import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
 
 internal class UtilsTest {
@@ -27,5 +28,10 @@ internal class UtilsTest {
         val result = readInputAsOneListOfIntegers("/test-ints.txt")
 
         assertThat(result).containsExactly(1, 2, 3, 2, 1)
+    }
+
+    @Test
+    fun `test product of collection`() {
+        assertThat(listOf(5L, 8L, 12L).productOf { it } ).isEqualTo(480)
     }
 }

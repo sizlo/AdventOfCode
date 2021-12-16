@@ -12,3 +12,7 @@ fun readInput(path: String): List<String> {
 fun readInputAsOneListOfIntegers(path: String): List<Int> {
     return readInput(path)[0].split(",").toIntList()
 }
+
+fun <T> Collection<T>.productOf(selector: (T) -> Long): Long {
+    return this.fold(1L) { product, item -> product * selector(item) }
+}
