@@ -1,6 +1,7 @@
 package advent.of.code.day17
 
 import advent.of.code.utils.*
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
 class TrickShot(input: String) {
@@ -85,21 +86,12 @@ class TrickShot(input: String) {
     }
 
     private fun findHighestYVelocityThatPassesThroughTarget(target: IntRange): Int {
-        var velocity = Short.MAX_VALUE.toInt()
-
-        while (true) {
-            val highestPoint = velocity.triangle()
-            val distancesToTarget = target.map { highestPoint - it }
-
-            distancesToTarget
-                .forEach {
-                    if (it.isTriangle()) {
-                        return velocity
-                    }
-                }
-
-            velocity--
-        }
+        // Any probe launched with a positive y velocity=V will go up, then come back down,
+        //   passing through y=0 with a y velocity=-V
+        // The highest this can be and still pass through the target is if on the next step
+        //   (where it has y velocity=-(V+1) it hit the bottom of the target
+        // So the max y velocity is distanceToBottomOfTarget - 1
+        return target.minOf { it }.absoluteValue - 1
     }
 
     private fun findLowestXVelocityWhichStopsWithinTargetDueToDrag(target: IntRange): Int {
