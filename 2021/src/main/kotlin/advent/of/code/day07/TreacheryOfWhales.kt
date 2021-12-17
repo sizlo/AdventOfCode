@@ -4,6 +4,7 @@ import advent.of.code.utils.Part
 import advent.of.code.utils.Part.PART_1
 import advent.of.code.utils.Part.PART_2
 import advent.of.code.utils.readInputAsOneListOfIntegers
+import advent.of.code.utils.triangle
 import kotlin.math.absoluteValue
 
 class TreacheryOfWhales(part: Part) {
@@ -28,11 +29,7 @@ class TreacheryOfWhales(part: Part) {
         override fun calculateFuelNeededToAlignToPosition(crabPositions: List<Int>, target: Int): Int {
             return crabPositions
                 .map { getDistanceBetween(it, target) }
-                .sumOf { calculateTriangleNumberForDistance(it) }
-        }
-
-        private fun calculateTriangleNumberForDistance(distance: Int): Int {
-            return (distance * (distance + 1)) / 2
+                .sumOf { it.triangle() }
         }
     }
 

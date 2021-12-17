@@ -1,8 +1,6 @@
 package advent.of.code.day17
 
-import advent.of.code.utils.Coordinate
-import advent.of.code.utils.Velocity
-import advent.of.code.utils.readInput
+import advent.of.code.utils.*
 import kotlin.math.max
 
 class TrickShot(input: String) {
@@ -19,10 +17,9 @@ class TrickShot(input: String) {
         }
     }
 
-    data class LaunchResult(val hitTarget: Boolean, val highestYPosition: Int)
 
     class Launcher(private val target: Area) {
-        fun launch(initialVelocity: Velocity): LaunchResult {
+        fun hitsTargetWithInitialVelocity(initialVelocity: Velocity): Boolean {
             var position = Coordinate(0, 0)
             var velocity = initialVelocity
             var maxY = position.y
@@ -34,7 +31,7 @@ class TrickShot(input: String) {
                 maxY = max(position.y, maxY)
             }
 
-            return LaunchResult(target.contains(position), maxY)
+            return target.contains(position)
         }
 
         private fun applyDrag(velocity: Velocity): Velocity {
@@ -64,28 +61,54 @@ class TrickShot(input: String) {
     }
 
     fun findHighestPossibleYPositionProbeCanReachAndStillHitTargetArea(): Int {
+        val yVelocity = findHighestYVelocityThatPassesThroughTarget(target.yRange)
+        return yVelocity.triangle()
+    }
+
+    fun findNumberOfInitialVelocitiesWhereProbeHitsTarget(): Int {
         val launcher = Launcher(target)
-        val xVelocity = findXVelocityWhichStopsWithinTargetDueToDrag(target.xRange)
 
-        var yVelocity = Short.MAX_VALUE.toInt()
-        while (true) {
-            val result = launcher.launch(Velocity(xVelocity, yVelocity))
+        val minYVelocity = target.yRange.minOf { it }
+        val maxYVelocity = findHighestYVelocityThatPassesThroughTarget(target.yRange)
 
-            if (result.hitTarget) {
-                return result.highestYPosition
+        val minXVelocity = findLowestXVelocityWhichStopsWithinTargetDueToDrag(target.xRange)
+        val maxXVelocity = target.xRange.maxOf { it }
+
+        val velocitiesToCheck = (minYVelocity .. maxYVelocity)
+            .flatMap { y ->
+                (minXVelocity .. maxXVelocity).map { x ->
+                    Velocity(x, y)
+                }
             }
 
-            yVelocity--
+        return velocitiesToCheck.count { launcher.hitsTargetWithInitialVelocity(it) }
+    }
+
+    private fun findHighestYVelocityThatPassesThroughTarget(target: IntRange): Int {
+        var velocity = Short.MAX_VALUE.toInt()
+
+        while (true) {
+            val highestPoint = velocity.triangle()
+            val distancesToTarget = target.map { highestPoint - it }
+
+            distancesToTarget
+                .forEach {
+                    if (it.isTriangle()) {
+                        return velocity
+                    }
+                }
+
+            velocity--
         }
     }
 
-    private fun findXVelocityWhichStopsWithinTargetDueToDrag(xRange: IntRange): Int {
+    private fun findLowestXVelocityWhichStopsWithinTargetDueToDrag(target: IntRange): Int {
         var velocity = 0
-        var positions = xRange.toList()
+        var position = 0
 
-        while (!positions.contains(0)) {
+        while (!target.contains(position)) {
             velocity++
-            positions = positions.map { it - velocity }
+            position+= velocity
         }
 
         return velocity
@@ -94,5 +117,7 @@ class TrickShot(input: String) {
 
 fun main() {
     val input = readInput("/day17/input.txt")
-    println(TrickShot(input).findHighestPossibleYPositionProbeCanReachAndStillHitTargetArea()) // 9180
+    val trickShot = TrickShot(input)
+    println(trickShot.findHighestPossibleYPositionProbeCanReachAndStillHitTargetArea()) // 9180
+    println(trickShot.findNumberOfInitialVelocitiesWhereProbeHitsTarget()) // 3767
 }

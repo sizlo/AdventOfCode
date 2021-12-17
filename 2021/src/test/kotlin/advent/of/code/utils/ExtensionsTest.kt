@@ -3,6 +3,8 @@ package advent.of.code.utils
 import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isTrue
 import org.junit.jupiter.api.Test
 
 internal class ExtensionsTest {
@@ -32,5 +34,28 @@ internal class ExtensionsTest {
     @Test
     fun `test product of collection`() {
         assertThat(listOf(5L, 8L, 12L).productOf { it } ).isEqualTo(480)
+    }
+
+    @Test
+    fun `test triangle-ing a number`() {
+        val five = 5
+        assertThat(five.triangle()).isEqualTo(15)
+    }
+
+    @Test
+    fun `test checking a number is triangle`() {
+        val one = 1
+        val two = 2
+        val three = 3
+        val four = 4
+        val five = 5
+        val six = 6
+
+        assertThat(one.isTriangle()).isTrue()
+        assertThat(two.isTriangle()).isFalse()
+        assertThat(three.isTriangle()).isTrue()
+        assertThat(four.isTriangle()).isFalse()
+        assertThat(five.isTriangle()).isFalse()
+        assertThat(six.isTriangle()).isTrue()
     }
 }

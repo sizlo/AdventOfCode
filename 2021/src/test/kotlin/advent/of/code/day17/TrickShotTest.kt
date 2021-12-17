@@ -25,6 +25,13 @@ internal class TrickShotTest {
         assertThat(result).isEqualTo(45)
     }
 
+    @Test
+    fun `test example for part 2`() {
+        val result = testSubject.findNumberOfInitialVelocitiesWhereProbeHitsTarget()
+
+        assertThat(result).isEqualTo(112)
+    }
+
     @Nested
     inner class LauncherTest {
         private val testSubject = Launcher(Area(20 .. 30, -10 .. -5))
@@ -37,13 +44,13 @@ internal class TrickShotTest {
         )
         fun `test examples which hit`(x: String, y: String) {
             val initialVelocity = Velocity(x.toInt(), y.toInt())
-            assertThat(testSubject.launch(initialVelocity).hitTarget).isTrue()
+            assertThat(testSubject.hitsTargetWithInitialVelocity(initialVelocity)).isTrue()
         }
 
         @Test
         fun `test example which misses`() {
             val initialVelocity = Velocity(17, -4)
-            assertThat(testSubject.launch(initialVelocity).hitTarget).isFalse()
+            assertThat(testSubject.hitsTargetWithInitialVelocity(initialVelocity)).isFalse()
         }
     }
 
