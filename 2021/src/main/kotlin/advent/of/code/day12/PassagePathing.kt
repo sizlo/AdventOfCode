@@ -2,7 +2,7 @@ package advent.of.code.day12
 
 import advent.of.code.utils.Part
 import advent.of.code.utils.Part.*
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 
 typealias Path = MutableList<PassagePathing.Cave>
 
@@ -83,7 +83,7 @@ class PassagePathing(private val part: Part) {
 }
 
 fun main() {
-    val input = readInput("/day12/input.txt")
+    val input = readInputLines("/day12/input.txt")
     println(PassagePathing(PART_1).countAllPossiblePaths(input)) // 4885
     println(PassagePathing(PART_2).countAllPossiblePaths(input)) // 117095
 }

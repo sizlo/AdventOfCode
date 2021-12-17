@@ -3,7 +3,7 @@ package advent.of.code.day02
 import advent.of.code.utils.Part
 import advent.of.code.utils.Part.PART_1
 import advent.of.code.utils.Part.PART_2
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 
 class Dive(private val part: Part) {
     val position = Position(depth = 0, horizontal = 0)
@@ -52,7 +52,7 @@ data class Position(var depth: Int, var horizontal: Int) {
 }
 
 fun main() {
-    val input = readInput("/day02/input.txt")
+    val input = readInputLines("/day02/input.txt")
 
     val diveForPart1 = Dive(PART_1)
     diveForPart1.applyCommands(input)

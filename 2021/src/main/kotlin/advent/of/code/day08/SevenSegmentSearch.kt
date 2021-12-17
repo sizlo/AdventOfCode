@@ -1,6 +1,6 @@
 package advent.of.code.day08
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 
 class SevenSegmentSearch(input: List<String>) {
 
@@ -129,7 +129,7 @@ class SevenSegmentSearch(input: List<String>) {
 }
 
 fun main() {
-    val input = readInput("/day08/input.txt")
+    val input = readInputLines("/day08/input.txt")
     val sevenSegmentSearch = SevenSegmentSearch(input)
     println(sevenSegmentSearch.countOutputSignalPatternsWhichUseAUniqueNumberOfSegments()) // 310
     println(sevenSegmentSearch.decodeAndSumAllOutputValues()) // 915941

@@ -1,7 +1,7 @@
 package advent.of.code.day05
 
 import advent.of.code.utils.Coordinate
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 import kotlin.math.abs
 
 class HydrothermalVenture(input: List<String>) {
@@ -63,7 +63,7 @@ class HydrothermalVenture(input: List<String>) {
 }
 
 fun main() {
-    val input = readInput("/day05/input.txt")
+    val input = readInputLines("/day05/input.txt")
     val hydrothermalVenture = HydrothermalVenture(input)
     println(hydrothermalVenture.countPointsCoveredByNonDiagonalLines(minimumOverlap = 2)) // 5698
     println(hydrothermalVenture.countPointsCoveredByLines(minimumOverlap = 2)) // 15463

@@ -1,11 +1,8 @@
 package advent.of.code.day09
 
-import advent.of.code.utils.Coordinate
-import advent.of.code.utils.Grid
-import advent.of.code.utils.GridItem
-import advent.of.code.utils.readInput
+import advent.of.code.utils.*
 
-class SmokeBasin(input: List<String>) {
+class SmokeBasin(input: IntGrid) {
 
     class Cell(coordinate: Coordinate, private val heightValue: Int, heightMap: HeightMap)
         : GridItem<Cell>(coordinate = coordinate, grid = heightMap) {
@@ -28,14 +25,10 @@ class SmokeBasin(input: List<String>) {
         }
     }
 
-    class HeightMap(input: List<String>): Grid<Cell>(width = input[0].length, height = input.size) {
+    class HeightMap(input: IntGrid): Grid<Cell>(input) {
 
         init {
-            input.forEachIndexed { y, row ->
-                row.toList().map { it.digitToInt() }.forEachIndexed { x, heightValue ->
-                    this.items.add(Cell(Coordinate(x, y), heightValue, this))
-                }
-            }
+            populate { coordinate, heightValue -> Cell(coordinate, heightValue, this) }
         }
 
         fun getLowPoints(): List<Cell> {
@@ -63,7 +56,7 @@ class SmokeBasin(input: List<String>) {
 }
 
 fun main() {
-    val input = readInput("/day09/input.txt")
+    val input = readInputAsIntGrid("/day09/input.txt")
     val smokeBasin = SmokeBasin(input)
     println(smokeBasin.findSumOfRiskLevelsOfAllLowPoints()) // 572
     println(smokeBasin.multiplySizesOfThreeLargestBasins()) // 847044

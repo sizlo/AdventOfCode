@@ -1,6 +1,6 @@
 package advent.of.code.day01
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 import advent.of.code.utils.toIntList
 
 class SonarSweep {
@@ -21,7 +21,7 @@ class SonarSweep {
 }
 
 fun main() {
-    val input = readInput("/day01/input.txt").toIntList()
+    val input = readInputLines("/day01/input.txt").toIntList()
     println(SonarSweep().part1(input)) // 1583
     println(SonarSweep().part2(input)) // 1627
 }

@@ -1,6 +1,6 @@
 package advent.of.code.day03
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 
 class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
 
@@ -64,7 +64,7 @@ class BinaryDiagnostic(private val diagnosticBinaryNumbers: List<String>) {
 }
 
 fun main() {
-    val input = readInput("/day03/input.txt")
+    val input = readInputLines("/day03/input.txt")
     val binaryDiagnostic = BinaryDiagnostic(input)
     println(binaryDiagnostic.getPowerConsumption()) // 1092896
     println(binaryDiagnostic.getLifeSupportRating()) // 4672151

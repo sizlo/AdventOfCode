@@ -1,6 +1,6 @@
 package advent.of.code.day04
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 import advent.of.code.utils.toIntList
 import kotlin.math.sqrt
 
@@ -94,7 +94,7 @@ class GiantSquid {
 }
 
 fun main() {
-    val input = readInput("/day04/input.txt")
+    val input = readInputLines("/day04/input.txt")
     val giantSquid = GiantSquid()
     println(giantSquid.findWinningScore(input)) // 6592
     println(giantSquid.findLosingScore(input)) // 31755

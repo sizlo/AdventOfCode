@@ -1,9 +1,6 @@
 package advent.of.code.day11
 
-import advent.of.code.utils.Coordinate
-import advent.of.code.utils.Grid
-import advent.of.code.utils.GridItem
-import advent.of.code.utils.readInput
+import advent.of.code.utils.*
 
 class DumboOctopus {
 
@@ -28,14 +25,10 @@ class DumboOctopus {
         }
     }
 
-    class OctopusGrid(input: List<String>): Grid<Octopus>(width = input.size, height = input.size) {
+    class OctopusGrid(input: IntGrid): Grid<Octopus>(input) {
 
         init {
-            input.forEachIndexed { y, row ->
-                row.toList().map { it.digitToInt() }.forEachIndexed { x, energy ->
-                    this.items.add(Octopus(energy, Coordinate(x, y), this))
-                }
-            }
+            populate { coordinate, energyValue -> Octopus(energyValue, coordinate, this) }
         }
 
         fun doStep() {
@@ -49,7 +42,7 @@ class DumboOctopus {
         fun allHaveFlashedOnThisStep(): Boolean = items.all { it.energy == 0 }
     }
 
-    fun getTotalFlashesAfter100Steps(input: List<String>): Int {
+    fun getTotalFlashesAfter100Steps(input: IntGrid): Int {
         val octopusGrid = OctopusGrid(input)
         repeat (100) {
             octopusGrid.doStep()
@@ -57,7 +50,7 @@ class DumboOctopus {
         return octopusGrid.getTotalFlashes()
     }
 
-    fun getFirstStepWhereAllOctopusesFlash(input: List<String>): Int {
+    fun getFirstStepWhereAllOctopusesFlash(input: IntGrid): Int {
         val octopusGrid = OctopusGrid(input)
 
         var step = 1
@@ -72,7 +65,7 @@ class DumboOctopus {
 }
 
 fun main() {
-    val input = readInput("/day11/input.txt")
+    val input = readInputAsIntGrid("/day11/input.txt")
     println(DumboOctopus().getTotalFlashesAfter100Steps(input)) // 1705
     println(DumboOctopus().getFirstStepWhereAllOctopusesFlash(input)) // 265
 }

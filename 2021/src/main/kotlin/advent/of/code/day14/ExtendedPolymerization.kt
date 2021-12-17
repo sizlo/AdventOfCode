@@ -1,6 +1,6 @@
 package advent.of.code.day14
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 
 class ExtendedPolymerization {
 
@@ -65,7 +65,7 @@ class ExtendedPolymerization {
 }
 
 fun main() {
-    val input = readInput("/day14/input.txt")
+    val input = readInputLines("/day14/input.txt")
     println(ExtendedPolymerization().findMostCommonElementMinusLeastCommonElementAfterNSteps(input, steps = 10)) // 2509
     println(ExtendedPolymerization().findMostCommonElementMinusLeastCommonElementAfterNSteps(input, steps = 40)) // 2827627697643
 }

@@ -7,11 +7,13 @@ import org.junit.jupiter.api.Test
 
 internal class GridTest {
 
-    private val testSubject = Grid(width = 5, height = 3, items = mutableListOf(
-        1, 2, 3, 4, 5,
-        6, 7, 8, 9, 10,
-        11, 12, 13, 14, 15
-    ))
+    private val numbers = listOf(
+        listOf(1, 2, 3, 4, 5),
+        listOf(6, 7, 8, 9, 10),
+        listOf(11, 12, 13, 14, 15),
+    )
+
+    private val testSubject = Grid<Int>(numbers).apply { this.populate { _, number -> number } }
 
     @Test
     fun `should return null when x is too low`() {

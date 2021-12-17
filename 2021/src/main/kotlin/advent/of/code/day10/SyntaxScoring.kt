@@ -1,6 +1,6 @@
 package advent.of.code.day10
 
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 import java.lang.RuntimeException
 import java.util.*
 
@@ -91,7 +91,7 @@ class SyntaxScoring {
 }
 
 fun main() {
-    val input = readInput("/day10/input.txt")
+    val input = readInputLines("/day10/input.txt")
     val syntaxScoring = SyntaxScoring()
     println(syntaxScoring.findTotalScoreOfCorruptLines(input)) // 388713
     println(syntaxScoring.findMiddleScoreOfIncompleteLines(input)) // 3539961434

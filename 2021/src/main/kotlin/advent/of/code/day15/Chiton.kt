@@ -6,31 +6,27 @@ import advent.of.code.utils.Part.PART_2
 import java.util.*
 import kotlin.system.measureTimeMillis
 
-typealias Tile = List<List<Int>>
-
-fun Tile.incrementTile(): Tile {
+fun IntGrid.incrementTile(): IntGrid {
     return this
         .map { row ->
             row.map { if (it + 1 > 9) 1 else it + 1 }
         }
 }
 
-fun Tile.joinRight(rhs: Tile): Tile {
+fun IntGrid.joinRight(rhs: IntGrid): IntGrid {
     return this.zip(rhs) { left, right -> left + right }
 }
 
-fun Tile.joinBottom(btm: Tile): Tile {
+fun IntGrid.joinBottom(btm: IntGrid): IntGrid {
     return this + btm
 }
 
 class Chiton(private val part: Part) {
 
-    class RiskLevelMap(input: List<String>): Grid<Int>(width = input.first().length, height = input.size) {
+    class RiskLevelMap(input: IntGrid): Grid<Int>(input) {
 
         init {
-            input.forEach { row ->
-                row.forEach { items.add(it.digitToInt()) }
-            }
+            populate { _, number -> number }
         }
 
         fun findLowestPathRisk(): Int {
@@ -73,19 +69,14 @@ class Chiton(private val part: Part) {
 
 
 
-    fun findLowestPathRisk(input: List<String>): Int {
+    fun findLowestPathRisk(input: IntGrid): Int {
         return when (part) {
             PART_1 -> RiskLevelMap(input).findLowestPathRisk()
             PART_2 -> RiskLevelMap(generateTiles(input)).findLowestPathRisk()
         }
     }
 
-    private fun generateTiles(input: List<String>): List<String> {
-        val tile = input
-            .map { row ->
-                row.toList().map { item -> item.digitToInt() }
-            }
-
+    private fun generateTiles(tile: IntGrid): IntGrid {
         val tilePlus1 = tile.incrementTile()
         val tilePlus2 = tilePlus1.incrementTile()
         val tilePlus3 = tilePlus2.incrementTile()
@@ -98,14 +89,12 @@ class Chiton(private val part: Part) {
         val tileRowPlus3 = tileRowPlus2.incrementTile()
         val tileRowPlus4 = tileRowPlus3.incrementTile()
 
-        val allTiles = tileRow.joinBottom(tileRowPlus1).joinBottom(tileRowPlus2).joinBottom(tileRowPlus3).joinBottom(tileRowPlus4)
-
-        return allTiles.map { it.joinToString("") }
+        return tileRow.joinBottom(tileRowPlus1).joinBottom(tileRowPlus2).joinBottom(tileRowPlus3).joinBottom(tileRowPlus4)
     }
 }
 
 fun main() {
-    val input = readInput("/day15/input.txt")
+    val input = readInputAsIntGrid("/day15/input.txt")
 
     val part1 = Chiton(PART_1).findLowestPathRisk(input) // 745
     println("Part 1 result: $part1")

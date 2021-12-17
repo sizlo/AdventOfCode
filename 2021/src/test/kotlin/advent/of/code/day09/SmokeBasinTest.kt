@@ -1,5 +1,6 @@
 package advent.of.code.day09
 
+import advent.of.code.utils.toIntGrid
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Test
@@ -12,7 +13,7 @@ internal class SmokeBasinTest {
         "9856789892",
         "8767896789",
         "9899965678",
-    )
+    ).toIntGrid()
 
     private val testSubject = SmokeBasin(exampleInput)
 

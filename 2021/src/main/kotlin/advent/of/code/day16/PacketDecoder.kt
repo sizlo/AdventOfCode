@@ -170,7 +170,7 @@ class PacketDecoder {
 }
 
 fun main() {
-    val input = readInput("/day16/input.txt")[0]
+    val input = readInput("/day16/input.txt")
     println(PacketDecoder().getSumOfAllVersions(input)) // 949
     println(PacketDecoder().getValue(input)) // 1114600142730
 }

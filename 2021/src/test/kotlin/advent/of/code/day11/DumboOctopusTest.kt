@@ -1,6 +1,7 @@
 package advent.of.code.day11
 
 import advent.of.code.day11.DumboOctopus.OctopusGrid
+import advent.of.code.utils.toIntGrid
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Nested
@@ -19,7 +20,7 @@ internal class DumboOctopusTest {
         "6882881134",
         "4846848554",
         "5283751526",
-    )
+    ).toIntGrid()
 
     private val testSubject = DumboOctopus()
 
@@ -47,7 +48,7 @@ internal class DumboOctopusTest {
                 "19191",
                 "19991",
                 "11111",
-            )
+            ).toIntGrid()
 
             val testSubject = OctopusGrid(exampleInput)
             println(testSubject)

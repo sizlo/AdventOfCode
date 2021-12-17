@@ -2,6 +2,7 @@ package advent.of.code.day15
 
 import advent.of.code.utils.Part.PART_1
 import advent.of.code.utils.Part.PART_2
+import advent.of.code.utils.toIntGrid
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import org.junit.jupiter.api.Nested
@@ -20,7 +21,7 @@ internal class ChitonTest {
         "3125421639",
         "1293138521",
         "2311944581",
-    )
+    ).toIntGrid()
 
     @Test
     fun `test example input for part 1`() {

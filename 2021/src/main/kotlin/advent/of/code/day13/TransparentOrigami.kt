@@ -2,7 +2,7 @@ package advent.of.code.day13
 
 import advent.of.code.day13.TransparentOrigami.Axis.*
 import advent.of.code.utils.Coordinate
-import advent.of.code.utils.readInput
+import advent.of.code.utils.readInputLines
 import kotlin.math.absoluteValue
 
 class TransparentOrigami(input: List<String>) {
@@ -73,7 +73,7 @@ class TransparentOrigami(input: List<String>) {
 }
 
 fun main() {
-    val input = readInput("/day13/input.txt")
+    val input = readInputLines("/day13/input.txt")
     val transparentOrigami = TransparentOrigami(input)
     println(transparentOrigami.countDotsAfter1Fold()) // 701
     println(transparentOrigami.getImageProducedAfterApplyingAllFolds()) // FPEKBEJL
