@@ -7,7 +7,6 @@ import kotlin.math.max
 class TrickShot(input: String) {
 
     class Area(val xRange: IntRange, val yRange: IntRange) {
-
         fun contains(coordinate: Coordinate): Boolean {
             return xRange.contains(coordinate.x) && yRange.contains(coordinate.y)
         }
@@ -17,7 +16,6 @@ class TrickShot(input: String) {
             return coordinate.x > xRange.last || coordinate.y < yRange.first
         }
     }
-
 
     class Launcher(private val target: Area) {
         fun hitsTargetWithInitialVelocity(initialVelocity: Velocity): Boolean {
