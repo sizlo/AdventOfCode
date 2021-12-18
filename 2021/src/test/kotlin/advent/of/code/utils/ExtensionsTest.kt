@@ -1,10 +1,7 @@
 package advent.of.code.utils
 
 import assertk.assertThat
-import assertk.assertions.containsExactly
-import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
-import assertk.assertions.isTrue
+import assertk.assertions.*
 import org.junit.jupiter.api.Test
 
 internal class ExtensionsTest {

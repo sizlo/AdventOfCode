@@ -26,3 +26,5 @@ fun Int.isTriangle(): Boolean {
     // n is a triangle if 8n+1 is a perfect square - https://stackoverflow.com/a/2913319
     return sqrt(8 * this + 1.0) % 1 == 0.0
 }
+
+fun String.isAllDigits(): Boolean = this.toList().all { it.isDigit() }
