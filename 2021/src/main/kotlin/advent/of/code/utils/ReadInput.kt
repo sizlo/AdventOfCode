@@ -1,7 +1,9 @@
 package advent.of.code.utils
 
+import java.lang.RuntimeException
+
 fun readInput(path: String): String {
-    val resource = object {}.javaClass.getResource(path) ?: return ""
+    val resource = object {}.javaClass.getResource(path) ?: throw RuntimeException("Could not read file at $path")
     return resource.readText()
 }
 

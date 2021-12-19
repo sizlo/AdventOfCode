@@ -55,4 +55,23 @@ internal class ExtensionsTest {
         assertThat(five.isTriangle()).isFalse()
         assertThat(six.isTriangle()).isTrue()
     }
+
+    @Test
+    fun `test splitting string list on blank lines`() {
+        val stringList = listOf(
+            "one",
+            "two",
+            "",
+            "three",
+            "",
+            "four",
+            "five"
+        )
+
+        val result = stringList.splitOnBlankLines()
+
+        assertThat(result[0]).containsExactly("one", "two")
+        assertThat(result[1]).containsExactly("three")
+        assertThat(result[2]).containsExactly("four", "five")
+    }
 }

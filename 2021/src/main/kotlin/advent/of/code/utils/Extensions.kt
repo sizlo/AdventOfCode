@@ -16,6 +16,13 @@ fun List<String>.toIntGrid(): IntGrid {
     }
 }
 
+fun List<String>.splitOnBlankLines(): List<List<String>> {
+    return this
+        .joinToString("\n")
+        .split("\n\n")
+        .map { it.split("\n") }
+}
+
 fun <T> Collection<T>.productOf(selector: (T) -> Long): Long {
     return this.fold(1L) { product, item -> product * selector(item) }
 }
