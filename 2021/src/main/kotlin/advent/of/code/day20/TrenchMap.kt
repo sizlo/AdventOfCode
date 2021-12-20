@@ -13,7 +13,7 @@ class TrenchMap {
         }
     }
 
-    class Image(input: IntGrid, private val infiniteBorderPixel: Pixel = Pixel.DARK): Grid<Pixel>(input) {
+    class Image(input: IntGrid, val infiniteBorderPixel: Pixel = Pixel.DARK): Grid<Pixel>(input) {
         init {
             populate { _, pixelBit -> Pixel.fromBit(pixelBit) }
         }
@@ -52,14 +52,22 @@ class TrenchMap {
     }
 
     fun countLitPixelsAfterNIterations(input: List<String>, iterations: Int): Int {
-        val algorithm = input[0].map { Pixel.fromChar(it) }
-        val imageInput = input.subList(2, input.size).toIntGrid { Pixel.fromChar(it).bit }
-        val image = Image(imageInput)
+        val algorithmAndImage = parseInput(input)
+        val algorithm = algorithmAndImage.first
+        val image = algorithmAndImage.second
 
         val enhancedImage = (0 until iterations)
             .fold(image) { enhancedImage, _ -> enhancedImage.enhance(algorithm) }
 
         return enhancedImage.countLitPixels()
+    }
+
+    fun parseInput(input: List<String>): Pair<List<Pixel>, Image> {
+        val algorithm = input[0].map { Pixel.fromChar(it) }
+        val imageInput = input.subList(2, input.size).toIntGrid { Pixel.fromChar(it).bit }
+        val image = Image(imageInput)
+
+        return Pair(algorithm, image)
     }
 }
 

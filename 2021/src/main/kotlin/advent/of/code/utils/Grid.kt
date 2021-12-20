@@ -9,8 +9,8 @@ open class GridItem<T>(val coordinate: Coordinate, private val grid: Grid<T>) {
 }
 
 open class Grid<T>(private val numbers: IntGrid) {
-    protected val width = numbers[0].size
-    protected  val height = numbers.size
+    val width = numbers[0].size
+    val height = numbers.size
     protected val items: MutableList<T> = mutableListOf()
 
     fun getItemAt(coordinate: Coordinate): T? {
