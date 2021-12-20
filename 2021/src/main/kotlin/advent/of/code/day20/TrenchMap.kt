@@ -9,6 +9,7 @@ class TrenchMap {
 
         companion object {
             fun fromChar(char: Char) = values().first { it.char == char }
+            fun fromBit(bit: Int) = values().first { it.bit == bit }
         }
     }
 
@@ -16,31 +17,9 @@ class TrenchMap {
         fun isLit() = pixelValue == PixelBit.LIGHT.bit
     }
 
-    class Image(input: IntGrid): Grid<Pixel>(input) {
+    class Image(input: IntGrid, private val infiniteBorderPixel: PixelBit = PixelBit.DARK): Grid<Pixel>(input) {
         init {
             populate { coordinate, pixelValue -> Pixel(coordinate, this, pixelValue) }
-        }
-
-        fun padWithDarkBorder(borderSize: Int): Image {
-            val bitGrid = (0 until height).map { y ->
-                (0 until width).map { x ->
-                    getItemAt(Coordinate(x, y))!!.pixelValue
-                }
-            }
-
-            val sideBorder = List(borderSize) { PixelBit.DARK.bit }
-            val withPaddedSides = bitGrid.map { row -> sideBorder + row + sideBorder }
-            val topBorder = List(borderSize) { List(withPaddedSides[0].size) { PixelBit.DARK.bit } }
-            return Image(topBorder + withPaddedSides + topBorder)
-        }
-
-        fun removeBorder(borderSize: Int): Image {
-            val bitGrid = (borderSize until height - borderSize).map { y ->
-                (borderSize until width - borderSize).map { x ->
-                    getItemAt(Coordinate(x, y))!!.pixelValue
-                }
-            }
-            return Image(bitGrid)
         }
 
         fun countLitPixels(): Int {
@@ -48,13 +27,18 @@ class TrenchMap {
         }
 
         fun enhance(algorithm: List<Int>): Image {
-            val enhancedImageInput = (0 until height).map { y ->
-                (0 until width).map { x ->
+            val enhancedImageInput = (-1 .. height).map { y ->
+                (-1 .. width).map { x ->
                     enhancePixelAt(Coordinate(x, y), algorithm)
                 }
             }
 
-            return Image(enhancedImageInput)
+            val newInfiniteBorderPixel = when (infiniteBorderPixel) {
+                PixelBit.DARK -> PixelBit.fromBit(algorithm.first())
+                PixelBit.LIGHT -> PixelBit.fromBit(algorithm.last())
+            }
+
+            return Image(enhancedImageInput, newInfiniteBorderPixel)
         }
 
         private fun enhancePixelAt(coordinate: Coordinate, algorithm: List<Int>): Int {
@@ -62,7 +46,7 @@ class TrenchMap {
                 .getNeighbourCoordinates(includeDiagonals = true)
                 .let { it + coordinate }
                 .sortedBy { it.y * 3 + it.x }
-                .map { getItemAt(it)?.pixelValue ?: PixelBit.DARK.bit }
+                .map { getItemAt(it)?.pixelValue ?: infiniteBorderPixel.bit }
                 .joinToString("")
             val indexFromWindow = binaryIndexFromWindow.toInt(2)
 
@@ -73,12 +57,14 @@ class TrenchMap {
     fun countLitPixelsAfterNIterations(input: List<String>, iterations: Int): Int {
         val algorithm = input[0].map { PixelBit.fromChar(it).bit }
         val imageInput = input.subList(2, input.size).toIntGrid { PixelBit.fromChar(it).bit }
-        val image = Image(imageInput).padWithDarkBorder(iterations * 2)
+        val image = Image(imageInput)
 
         val enhancedImage = (0 until iterations)
-            .fold(image) { enhancedImage, _ -> enhancedImage.enhance(algorithm) }
+            .foldIndexed(image) { index, enhancedImage, _ ->
+                enhancedImage.enhance(algorithm)
+            }
 
-        return enhancedImage.removeBorder(iterations).countLitPixels()
+        return enhancedImage.countLitPixels()
     }
 }
 
