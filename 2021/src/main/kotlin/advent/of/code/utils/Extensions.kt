@@ -8,10 +8,10 @@ fun List<String>.toIntList(): List<Int> {
     return this.map { it.toInt() }
 }
 
-fun List<String>.toIntGrid(): IntGrid {
+fun List<String>.toIntGrid(transform: (Char) -> Int = {it.digitToInt()} ): IntGrid {
     return this.map { row ->
         row.toList().map { item ->
-            item.digitToInt()
+            transform.invoke(item)
         }
     }
 }
