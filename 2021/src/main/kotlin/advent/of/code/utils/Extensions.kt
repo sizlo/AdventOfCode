@@ -35,3 +35,17 @@ fun Int.isTriangle(): Boolean {
 }
 
 fun String.isAllDigits(): Boolean = this.toList().all { it.isDigit() }
+
+fun IntRange.containsOther(other: IntRange): Boolean = this.contains(other.first) && this.contains(other.last)
+
+fun IntRange.splitBasedOnOverlapWith(other: IntRange): Set<IntRange> {
+    val otherWithinThisRange = maxOf(this.first, other.first) .. minOf(this.last, other.last)
+
+    val possibleParts = setOf(
+        this.first .. minOf(this.last, otherWithinThisRange.first - 1),
+        otherWithinThisRange,
+        maxOf(this.first, otherWithinThisRange.last + 1) .. this.last
+    )
+
+    return possibleParts.filter { this.containsOther(it) }.toSet()
+}

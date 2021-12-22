@@ -2,6 +2,7 @@ package advent.of.code.utils
 
 import assertk.assertThat
 import assertk.assertions.*
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
 internal class ExtensionsTest {
@@ -73,5 +74,77 @@ internal class ExtensionsTest {
         assertThat(result[0]).containsExactly("one", "two")
         assertThat(result[1]).containsExactly("three")
         assertThat(result[2]).containsExactly("four", "five")
+    }
+
+    @Test
+    fun `test int range contains other int range`() {
+        val container = 5 .. 10
+
+        assertThat(container.containsOther(6 .. 8)).isTrue()
+        assertThat(container.containsOther(5 .. 10)).isTrue()
+
+        assertThat(container.containsOther(1 .. 3)).isFalse()
+        assertThat(container.containsOther(4 .. 5)).isFalse()
+        assertThat(container.containsOther(4 .. 6)).isFalse()
+
+        assertThat(container.containsOther(12 .. 13)).isFalse()
+        assertThat(container.containsOther(10 .. 11)).isFalse()
+        assertThat(container.containsOther(10 .. 12)).isFalse()
+    }
+
+    @Nested
+    inner class TestSplitIntRange {
+
+        @Test
+        fun `test split with total overlap`() {
+            val result = (3 .. 5).splitBasedOnOverlapWith(1 .. 7)
+            assertThat(result).containsExactlyInAnyOrder(
+                3 .. 5
+            )
+        }
+
+        @Test
+        fun `test split with no overlap (too low)`() {
+            val result = (3 .. 5).splitBasedOnOverlapWith(0 .. 2)
+            assertThat(result).containsExactlyInAnyOrder(
+                3 .. 5
+            )
+        }
+
+        @Test
+        fun `test split with no overlap (too high)`() {
+            val result = (3 .. 5).splitBasedOnOverlapWith(6 .. 7)
+            assertThat(result).containsExactlyInAnyOrder(
+                3 .. 5
+            )
+        }
+
+        @Test
+        fun `test split with entirely contained overlap`() {
+            val result = (1 .. 5).splitBasedOnOverlapWith(3 .. 4)
+            assertThat(result).containsExactlyInAnyOrder(
+                1 .. 2,
+                3 .. 4,
+                5 .. 5
+            )
+        }
+
+        @Test
+        fun `test split with partial overlap (lower)`() {
+            val result = (3 .. 5).splitBasedOnOverlapWith(1 .. 4)
+            assertThat(result).containsExactlyInAnyOrder(
+                3 .. 4,
+                5 .. 5
+            )
+        }
+
+        @Test
+        fun `test split with partial overlap (higher)`() {
+            val result = (3 .. 5).splitBasedOnOverlapWith(5 .. 7)
+            assertThat(result).containsExactlyInAnyOrder(
+                3 .. 4,
+                5 .. 5
+            )
+        }
     }
 }
