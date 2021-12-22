@@ -17,7 +17,7 @@ class ReactorReboot {
     data class CubeRange(val xRange: IntRange, val yRange: IntRange, val zRange: IntRange) {
         fun getArea() = xRange.count().toLong() * yRange.count().toLong() * zRange.count().toLong()
 
-        fun removeOverlap(other: CubeRange): Set<CubeRange> {
+        fun removeOverlap(other: CubeRange): List<CubeRange> {
             val allCubeRanges = xRange.splitBasedOnOverlapWith(other.xRange).flatMap { xRange ->
                 yRange.splitBasedOnOverlapWith(other.yRange).flatMap { yRange ->
                     zRange.splitBasedOnOverlapWith(other.zRange).map { zRange ->
@@ -25,7 +25,7 @@ class ReactorReboot {
                     }
                 }
             }
-            return allCubeRanges.filter { !other.contains(it) }.toSet()
+            return allCubeRanges.filter { !other.contains(it) }
         }
 
         private fun contains(other: CubeRange): Boolean {
@@ -52,10 +52,9 @@ class ReactorReboot {
             }
         }
 
-        fun apply(onRanges: Set<CubeRange>): Set<CubeRange> {
+        fun apply(onRanges: List<CubeRange>): List<CubeRange> {
             val onRangesWithOverlapRemoved = onRanges
                 .flatMap { it.removeOverlap(this.cubeRange) }
-                .toSet()
 
             return when(state) {
                 ON -> onRangesWithOverlapRemoved + this.cubeRange
@@ -73,7 +72,7 @@ class ReactorReboot {
 
         val onRanges = rebootSteps
             .filter { !filterBounds || isWithinBounds(it.cubeRange) }
-            .foldIndexed(emptySet<CubeRange>()) { index, onRanges, rebootStep ->
+            .foldIndexed(emptyList<CubeRange>()) { index, onRanges, rebootStep ->
                 if (showProgress) {
                     println("${LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)} - Progress: On step $index / ${rebootSteps.size}. Current ON ranges = ${onRanges.size}")
                 }
@@ -106,5 +105,5 @@ fun main() {
         println("\nPart 2 result: $part2\n") // 1206644425246111
     }
 
-    println("Part 2 took ${timeForPart2}ms") // 1695285ms ~= 30 minutes
+    println("Part 2 took ${timeForPart2}ms") // 1207922ms ~= 20 minutes
 }

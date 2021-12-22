@@ -38,7 +38,7 @@ fun String.isAllDigits(): Boolean = this.toList().all { it.isDigit() }
 
 fun IntRange.containsOther(other: IntRange): Boolean = this.contains(other.first) && this.contains(other.last)
 
-fun IntRange.splitBasedOnOverlapWith(other: IntRange): Set<IntRange> {
+fun IntRange.splitBasedOnOverlapWith(other: IntRange): List<IntRange> {
     val otherWithinThisRange = maxOf(this.first, other.first) .. minOf(this.last, other.last)
 
     val possibleParts = setOf(
@@ -47,5 +47,5 @@ fun IntRange.splitBasedOnOverlapWith(other: IntRange): Set<IntRange> {
         maxOf(this.first, otherWithinThisRange.last + 1) .. this.last
     )
 
-    return possibleParts.filter { this.containsOther(it) }.toSet()
+    return possibleParts.filter { this.containsOther(it) }
 }
