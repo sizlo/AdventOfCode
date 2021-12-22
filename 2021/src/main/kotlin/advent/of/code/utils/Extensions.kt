@@ -38,14 +38,22 @@ fun String.isAllDigits(): Boolean = this.toList().all { it.isDigit() }
 
 fun IntRange.containsOther(other: IntRange): Boolean = this.contains(other.first) && this.contains(other.last)
 
+fun IntRange.getIntersectWithOther(other: IntRange): IntRange? {
+    val intersectStart = maxOf(this.first, other.first)
+    val intersectEnd = minOf(this.last, other.last)
+    return if (intersectStart > intersectEnd) null else intersectStart .. intersectEnd
+}
+
 fun IntRange.splitBasedOnOverlapWith(other: IntRange): List<IntRange> {
-    val otherWithinThisRange = maxOf(this.first, other.first) .. minOf(this.last, other.last)
+    return this.getIntersectWithOther(other)?.let { intersect ->
 
-    val possibleParts = setOf(
-        this.first .. minOf(this.last, otherWithinThisRange.first - 1),
-        otherWithinThisRange,
-        maxOf(this.first, otherWithinThisRange.last + 1) .. this.last
-    )
+        val possibleParts = setOf(
+            this.first .. minOf(this.last, intersect.first - 1),
+            intersect,
+            maxOf(this.first, intersect.last + 1) .. this.last
+        )
 
-    return possibleParts.filter { this.containsOther(it) }
+        return possibleParts.filter { this.containsOther(it) }
+
+    } ?: listOf(this)
 }

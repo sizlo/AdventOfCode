@@ -77,6 +77,16 @@ internal class ExtensionsTest {
     }
 
     @Test
+    fun `test int range intersect`() {
+        assertThat((1..5).getIntersectWithOther(6 .. 7)).isNull()
+        assertThat((3 .. 5).getIntersectWithOther(1 .. 2)).isNull()
+        assertThat((3 .. 5).getIntersectWithOther(1 .. 7)).isEqualTo(3 .. 5)
+        assertThat((1 .. 7).getIntersectWithOther(3 .. 5)).isEqualTo(3 .. 5)
+        assertThat((1 .. 4).getIntersectWithOther(3 .. 4)).isEqualTo(3 .. 4)
+        assertThat((3 .. 5).getIntersectWithOther(4 .. 6)).isEqualTo(4 .. 5)
+    }
+
+    @Test
     fun `test int range contains other int range`() {
         val container = 5 .. 10
 
