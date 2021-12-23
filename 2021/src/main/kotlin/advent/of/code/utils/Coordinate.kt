@@ -27,6 +27,11 @@ data class Coordinate(val x: Int, val y: Int, val z: Int = 0) {
         return neighbours
     }
 
+    fun below(): Coordinate = this.copy(y = y + 1)
+    fun above(): Coordinate = this.copy(y = y - 1)
+    fun left(): Coordinate = this.copy(x = x - 1)
+    fun right(): Coordinate = this.copy(x = x + 1)
+
     fun manhattanDistance(other: Coordinate): Int {
         return (this.x - other.x).absoluteValue + (this.y - other.y).absoluteValue + (this.z - other.z).absoluteValue
     }
