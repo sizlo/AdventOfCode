@@ -3,7 +3,6 @@ package advent.of.code.day23
 import advent.of.code.utils.Part
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 
 internal class AmphipodSortingTest {
@@ -23,7 +22,6 @@ internal class AmphipodSortingTest {
         assertThat(result).isEqualTo(12521)
     }
 
-    @Disabled // This takes 12 minutes
     @Test
     fun `test example input for part 2`() {
         val result = AmphipodSorting(Part.PART_2).findLeastAmountOfEnergyToSort(exampleInput)

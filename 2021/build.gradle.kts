@@ -21,5 +21,6 @@ dependencies {
 }
 
 tasks.withType<Test> {
+    jvmArgs = listOf("-Xmx8g")
     useJUnitPlatform()
 }

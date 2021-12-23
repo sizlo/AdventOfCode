@@ -3,6 +3,7 @@ package advent.of.code.day23
 import advent.of.code.utils.Coordinate
 import advent.of.code.utils.Part
 import advent.of.code.utils.readInputLines
+import advent.of.code.utils.requireHeapSpaceInGigabytes
 import kotlin.system.measureTimeMillis
 
 typealias Spaces = Map<Coordinate, AmphipodSorting.Amphipod?>
@@ -14,6 +15,8 @@ private val STOPPABLE_X_VALUES = listOf(1, 2, 4, 6, 8, 10, 11)
 class AmphipodSorting(private val part: Part) {
 
     class MutableInt(var value: Int)
+    
+    data class State(val spaces: Spaces, val energySoFar: Int)
 
     enum class Amphipod(val moveEnergy: Int, val destinationX: Int) {
         AMBER(1, 3),
@@ -26,6 +29,8 @@ class AmphipodSorting(private val part: Part) {
     }
 
     fun findLeastAmountOfEnergyToSort(input: List<String>): Int {
+        requireHeapSpaceInGigabytes(8)
+
         val realInput = if (part == Part.PART_1) {
             input
         } else {
@@ -37,7 +42,7 @@ class AmphipodSorting(private val part: Part) {
     }
 
     private fun parseInput(input: List<String>): Spaces {
-        val coordinatesAndChars = input.flatMapIndexed { y, row ->
+        val coordinatesAndChars = input.flatMapIndexed { y, _ ->
             input[y].mapIndexed { x, char ->
                 Pair(Coordinate(x, y), char)
             }
@@ -51,9 +56,14 @@ class AmphipodSorting(private val part: Part) {
     private fun tryAllPossibleMoves(
         currentSpaces: Spaces,
         energySoFar: Int = 0,
-        bestEnergyToComplete: MutableInt = MutableInt(Int.MAX_VALUE)
+        bestEnergyToComplete: MutableInt = MutableInt(Int.MAX_VALUE),
+        alreadyProcessedStates: MutableSet<State> = mutableSetOf()
     ): MutableInt {
         if (energySoFar > bestEnergyToComplete.value) return bestEnergyToComplete
+
+        val state = State(currentSpaces, energySoFar)
+        if (alreadyProcessedStates.contains(state)) return bestEnergyToComplete
+        alreadyProcessedStates.add(state)
 
         if (Amphipod.values().all { amphipodsOfThisTypeAreSorted(currentSpaces, it) }) {
             bestEnergyToComplete.value = energySoFar
@@ -63,7 +73,7 @@ class AmphipodSorting(private val part: Part) {
         currentSpaces
             .filter { it.value != null }
             .forEach { entry ->
-                tryAllPossibleMovesForOneAmphipod(currentSpaces, energySoFar, bestEnergyToComplete, entry.key)
+                tryAllPossibleMovesForOneAmphipod(currentSpaces, energySoFar, bestEnergyToComplete, alreadyProcessedStates, entry.key)
             }
         return bestEnergyToComplete
     }
@@ -72,6 +82,7 @@ class AmphipodSorting(private val part: Part) {
         currentSpaces: Spaces,
         energySoFar: Int,
         bestEnergyToComplete: MutableInt,
+        alreadyProcessedStates: MutableSet<State>,
         coordinate: Coordinate,
     ) {
         val amphipod = currentSpaces[coordinate]!!
@@ -79,17 +90,17 @@ class AmphipodSorting(private val part: Part) {
         if (amphipodsOfThisTypeAreSorted(currentSpaces, amphipod)) return
 
         if (coordinate.y == HALLWAY) {
-            moveIntoRoom(currentSpaces, coordinate, energySoFar, bestEnergyToComplete)
+            moveIntoRoom(currentSpaces, coordinate, energySoFar, bestEnergyToComplete, alreadyProcessedStates)
             return
         }
 
         if (coordinate.x != amphipod.destinationX) {
-            moveIntoHallway(currentSpaces, coordinate, energySoFar, bestEnergyToComplete)
+            moveIntoHallway(currentSpaces, coordinate, energySoFar, bestEnergyToComplete, alreadyProcessedStates)
             return
         }
 
         if (amphipodBelowNeedsToGetOut(currentSpaces, coordinate)) {
-            moveIntoHallway(currentSpaces, coordinate, energySoFar, bestEnergyToComplete)
+            moveIntoHallway(currentSpaces, coordinate, energySoFar, bestEnergyToComplete, alreadyProcessedStates)
         }
     }
 
@@ -115,7 +126,8 @@ class AmphipodSorting(private val part: Part) {
         currentSpaces: Spaces,
         coordinate: Coordinate,
         energySoFar: Int,
-        bestEnergyToComplete: MutableInt
+        bestEnergyToComplete: MutableInt,
+        alreadyProcessedStates: MutableSet<State>
     ) {
         val amphipod = currentSpaces[coordinate]!!
 
@@ -142,14 +154,15 @@ class AmphipodSorting(private val part: Part) {
             energyUsed += amphipod.moveEnergy
         }
 
-        move(currentSpaces, coordinate, movingCoordinate, energySoFar + energyUsed, bestEnergyToComplete)
+        move(currentSpaces, coordinate, movingCoordinate, energySoFar + energyUsed, bestEnergyToComplete, alreadyProcessedStates)
     }
 
     private fun moveIntoHallway(
         currentSpaces: Spaces,
         coordinate: Coordinate,
         energySoFar: Int,
-        bestEnergyToComplete: MutableInt
+        bestEnergyToComplete: MutableInt,
+        alreadyProcessedStates: MutableSet<State>
     ) {
         val amphipod = currentSpaces[coordinate]!!
         var energyUsedMovingUp = 0
@@ -167,7 +180,7 @@ class AmphipodSorting(private val part: Part) {
             movingLeftCoordinate = movingLeftCoordinate.left()
             energyUsedMovingLeft += amphipod.moveEnergy
             if (STOPPABLE_X_VALUES.contains(movingLeftCoordinate.x)) {
-                move(currentSpaces, coordinate, movingLeftCoordinate, energySoFar + energyUsedMovingLeft, bestEnergyToComplete)
+                move(currentSpaces, coordinate, movingLeftCoordinate, energySoFar + energyUsedMovingLeft, bestEnergyToComplete, alreadyProcessedStates)
             }
         }
 
@@ -177,7 +190,7 @@ class AmphipodSorting(private val part: Part) {
             movingRightCoordinate = movingRightCoordinate.right()
             energyUsedMovingRight += amphipod.moveEnergy
             if (STOPPABLE_X_VALUES.contains(movingRightCoordinate.x)) {
-                move(currentSpaces, coordinate, movingRightCoordinate, energySoFar + energyUsedMovingRight, bestEnergyToComplete)
+                move(currentSpaces, coordinate, movingRightCoordinate, energySoFar + energyUsedMovingRight, bestEnergyToComplete, alreadyProcessedStates)
             }
         }
     }
@@ -187,28 +200,28 @@ class AmphipodSorting(private val part: Part) {
         moveFrom: Coordinate,
         moveTo: Coordinate,
         energySoFar: Int,
-        bestEnergyToComplete: MutableInt
+        bestEnergyToComplete: MutableInt,
+        alreadyProcessedStates: MutableSet<State>
     ) {
         val newSpaces = currentSpaces.toMutableMap()
         newSpaces[moveTo] = newSpaces[moveFrom]
         newSpaces[moveFrom] = null
-        tryAllPossibleMoves(newSpaces, energySoFar, bestEnergyToComplete)
+        tryAllPossibleMoves(newSpaces, energySoFar, bestEnergyToComplete, alreadyProcessedStates)
     }
 }
 
 fun main() {
-
     val input = readInputLines("/day23/input.txt")
 
     val timeForPart1 = measureTimeMillis {
         val part1 = AmphipodSorting(Part.PART_1).findLeastAmountOfEnergyToSort(input)
         println("Part 1: $part1") // 16506
     }
-    println("Time taken for part 1: ${timeForPart1}ms") // 270923ms =~ 5 minutes
+    println("Time taken for part 1: ${timeForPart1}ms") // 2561ms =~ 3 seconds
 
     val timeForPart2 = measureTimeMillis {
         val part2 = AmphipodSorting(Part.PART_2).findLeastAmountOfEnergyToSort(input)
         println("Part 2: $part2") // 48304
     }
-    println("Time taken for part 2: ${timeForPart2}ms") // 779300ms =~ 12 minutes
+    println("Time taken for part 2: ${timeForPart2}ms") // 1218ms =~ 1 second
 }

@@ -1,7 +1,6 @@
 package advent.of.code.day22
 
 import advent.of.code.utils.*
-import java.lang.RuntimeException
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.system.measureTimeMillis
@@ -43,10 +42,7 @@ fun main() {
     val part1 = BadReactorReboot().countCubesThatAreOnAfterApplyingRebootSteps(input, filterBounds = true)
     println("Part 1 result: $part1\n") // 547648
 
-    // This is disgusting
-    if (Runtime.getRuntime().maxMemory() < 8589934592) {
-        throw RuntimeException("The part 2 solution is Not Good™ and requires at least 8GB of heap space")
-    }
+    requireHeapSpaceInGigabytes(8)
 
     val timeForPart2 = measureTimeMillis {
         val part2 = BadReactorReboot().countCubesThatAreOnAfterApplyingRebootSteps(input, filterBounds = false, showProgress = true)
