@@ -1,8 +1,6 @@
 package advent.of.code.day22
 
 import advent.of.code.utils.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import kotlin.system.measureTimeMillis
 
 class BadReactorReboot: ReactorReboot {
@@ -18,7 +16,7 @@ class BadReactorReboot: ReactorReboot {
             .filter { !filterBounds || isWithinBounds(it.cubeRange) }
             .foldIndexed(emptyList<CubeRange>()) { index, onRanges, rebootStep ->
                 if (showProgress) {
-                    println("${LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)} - Progress: On step $index / ${rebootSteps.size}. Current ON ranges = ${onRanges.size}")
+                    ProgressPrinter().printProgress("On step $index / ${rebootSteps.size}. Current ON ranges = ${onRanges.size}")
                 }
                 rebootStep.apply(onRanges)
             }
