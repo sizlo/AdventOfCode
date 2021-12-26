@@ -11,14 +11,14 @@ internal class ArithmeticLogicUnitTest {
 
     @Test
     fun `test negating a number`() {
-        val alu = ALU(inputNumbers = listOf(5))
+        val alu = ALU()
 
         val program = readProgram(listOf(
             "inp x",
             "mul x -1",
         ))
 
-        alu.run(program)
+        alu.run(program, listOf(5))
         val result = alu.variables["x"]
 
         assertThat(result).isEqualTo(-5)
@@ -30,7 +30,7 @@ internal class ArithmeticLogicUnitTest {
         "3,8,0"
     )
     fun `test checking if one number is 3 times another`(firstInput: Int, secondInput: Int, expectedResult: Int) {
-        val alu = ALU(inputNumbers = listOf(firstInput, secondInput))
+        val alu = ALU()
 
         val program = readProgram(listOf(
             "inp z",
@@ -39,7 +39,7 @@ internal class ArithmeticLogicUnitTest {
             "eql z x",
         ))
 
-        alu.run(program)
+        alu.run(program, listOf(firstInput, secondInput))
         val result = alu.variables["z"]
 
         assertThat(result).isEqualTo(expectedResult)
@@ -52,7 +52,7 @@ internal class ArithmeticLogicUnitTest {
         "6,0,1,1,0",
     )
     fun `test binary converter`(input: Int, expectedEights: Int, expectedFours: Int, expectedTwos: Int, expectedOnes: Int) {
-        val alu = ALU(inputNumbers = listOf(input))
+        val alu = ALU()
 
         val program = readProgram(listOf(
             "inp w",
@@ -68,7 +68,7 @@ internal class ArithmeticLogicUnitTest {
             "mod w 2",
         ))
 
-        alu.run(program)
+        alu.run(program, listOf(input))
 
         assertThat(alu.variables["z"]).isEqualTo(expectedOnes)
         assertThat(alu.variables["y"]).isEqualTo(expectedTwos)

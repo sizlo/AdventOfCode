@@ -1,5 +1,6 @@
 package advent.of.code.day24
 
+import advent.of.code.day24.ArithmeticLogicUnit.InputInstruction
 import advent.of.code.day24.ArithmeticLogicUnit.Instruction
 import advent.of.code.utils.ProgressPrinter
 import advent.of.code.utils.readInputLines
@@ -8,11 +9,28 @@ import kotlin.system.measureTimeMillis
 
 typealias Program = List<Instruction>
 
+fun Program.splitOnInputs(): List<Program> {
+    var currentSubProgram = mutableListOf<Instruction>()
+    val result = mutableListOf(currentSubProgram)
+
+    this.forEach { instruction ->
+        if (instruction is InputInstruction) {
+            currentSubProgram = mutableListOf()
+            result += currentSubProgram
+        }
+        currentSubProgram += instruction
+    }
+
+    return result.filter { it.isNotEmpty() }.map { it.toList() }
+}
+
 fun readProgram(input: List<String>): Program {
     return input.map { Instruction.fromString(it) }
 }
 
 class ArithmeticLogicUnit {
+
+    private val progressPrinter = ProgressPrinter()
 
     interface Instruction {
         companion object {
@@ -69,17 +87,18 @@ class ArithmeticLogicUnit {
         }
     }
 
-    class ALU(inputNumbers: List<Int>) {
-        private val inputNumberQueue = ArrayDeque(inputNumbers)
-
+    class ALU(w: Int = 0, x: Int = 0, y: Int = 0, z: Int = 0) {
         val variables = mutableMapOf(
-            "w" to 0,
-            "x" to 0,
-            "y" to 0,
-            "z" to 0,
+            "w" to w,
+            "x" to x,
+            "y" to y,
+            "z" to z,
         )
 
-        fun run(program: Program) {
+        private val inputNumberQueue = mutableListOf<Int>()
+
+        fun run(program: Program, inputNumbers: List<Int>) {
+            inputNumberQueue += inputNumbers
             program.forEach { it.apply(this) }
         }
 
@@ -98,28 +117,36 @@ class ArithmeticLogicUnit {
 
     fun getMaximumValidValue(input: List<String>): Long {
         val program = readProgram(input)
+        val subPrograms = program.splitOnInputs()
 
-        val maxPossibleValue = 99999999999999
-        val minPossibleValue = 11111111111111
+        return tryAllValues(subPrograms, ALU(), 0)!!
+    }
 
-        val progressPrinter = ProgressPrinter()
-
-        (maxPossibleValue downTo minPossibleValue)
-            .forEach { number ->
-                progressPrinter.printPercent("Current value: $number") {
-                    ((maxPossibleValue - number) / (maxPossibleValue - minPossibleValue)).toInt() * 100
-                }
-                val digits = number.toString().toList().map { it.digitToInt() }
-                if (!digits.contains(0)) {
-                    val alu = ALU(digits)
-                    alu.run(program)
-                    if (alu.variables["z"] == 0) {
-                        return number
-                    }
-                }
+    private fun tryAllValues(subPrograms: List<Program>, state: ALU, value: Long): Long? {
+        if (subPrograms.isEmpty()) {
+            progressPrinter.printPercent("Value: $value") { ((99999999999999 - value) / 88888888888888).toInt() * 100 }
+            return if (valueWasValid(state)) value else null
         }
 
-        throw RuntimeException("Could not find valid value")
+        (9 downTo 1).forEach { digit ->
+            val alu = ALU(
+                state.variables.getValue("w"),
+                state.variables.getValue("x"),
+                state.variables.getValue("y"),
+                state.variables.getValue("z")
+            )
+            alu.run(subPrograms.first(), listOf(digit))
+            val result = tryAllValues(subPrograms.slice(1 until subPrograms.size), alu, value * 10 + digit)
+            if (result != null) {
+                return result
+            }
+        }
+
+        return null
+    }
+
+    private fun valueWasValid(state: ALU): Boolean {
+        return state.variables["z"] == 0
     }
 }
 
