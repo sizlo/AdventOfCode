@@ -9,14 +9,14 @@ typealias ElfInventory = List<Int>
 class CalorieCounting {
 
     fun findLargestTotalCaloriesInASingleElfInventory(elfInventories: List<ElfInventory>): Int {
-        return findLargestTotalCaloriesInNElfInventories(elfInventories, 1)
+        return findLargestTotalCaloriesInNElvesInventories(elfInventories, 1)
     }
 
     fun findLargestTotalCaloriesInThreeElvesInventories(elfInventories: List<ElfInventory>): Int {
-        return findLargestTotalCaloriesInNElfInventories(elfInventories, 3)
+        return findLargestTotalCaloriesInNElvesInventories(elfInventories, 3)
     }
 
-    private fun findLargestTotalCaloriesInNElfInventories(elfInventories: List<ElfInventory>, n: Int): Int {
+    private fun findLargestTotalCaloriesInNElvesInventories(elfInventories: List<ElfInventory>, n: Int): Int {
         return elfInventories
             .map { it.sum() }
             .sortedDescending()
