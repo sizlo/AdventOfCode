@@ -1,8 +1,6 @@
-import org.jetbrains.compose.compose
-
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
-    id("org.jetbrains.compose") version "1.0.1-rc2"
+    id("org.jetbrains.kotlin.jvm") version "1.7.20"
+    id("org.jetbrains.compose") version "1.2.1"
 }
 
 repositories {
@@ -16,7 +14,7 @@ dependencies {
 
     implementation(compose.desktop.currentOs)
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.1")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
 }
 
