@@ -24,3 +24,7 @@ fun List<String>.splitOnBlankLines(): List<List<String>> {
 fun <T> Collection<T>.productOf(selector: (T) -> Long): Long {
     return this.fold(1L) { product, item -> product * selector(item) }
 }
+
+fun <K, V> Map<K, V>.invert(): Map<V, K> {
+    return this.entries.associate { it.value to it.key }
+}

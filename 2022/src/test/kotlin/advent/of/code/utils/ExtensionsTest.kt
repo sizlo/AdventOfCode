@@ -51,4 +51,15 @@ internal class ExtensionsTest {
         assertThat(result[1]).containsExactly("three")
         assertThat(result[2]).containsExactly("four", "five")
     }
+
+    @Test
+    fun `test inverting a map`() {
+        val map = mapOf("a" to 1, "b" to 2, "c" to 3)
+
+        val result = map.invert()
+
+        assertThat(result[1]).isEqualTo("a")
+        assertThat(result[2]).isEqualTo("b")
+        assertThat(result[3]).isEqualTo("c")
+    }
 }
