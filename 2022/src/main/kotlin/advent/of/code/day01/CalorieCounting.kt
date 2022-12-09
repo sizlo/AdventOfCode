@@ -20,7 +20,7 @@ class CalorieCounting {
         return elfInventories
             .map { it.sum() }
             .sortedDescending()
-            .subList(0, n)
+            .take(n)
             .sum()
     }
 }
