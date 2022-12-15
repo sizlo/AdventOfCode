@@ -37,3 +37,20 @@ fun <T> Collection<T>.productOf(selector: (T) -> Long): Long {
 fun <K, V> Map<K, V>.invert(): Map<V, K> {
     return this.entries.associate { it.value to it.key }
 }
+
+fun String.toIntRange(): IntRange {
+    if (this.toList().count { it == '-' } != 1) {
+        throw RuntimeException("Negative numbers are not supported")
+    }
+
+    val ints =  this.split("-").toIntList()
+    return ints[0]..ints[1]
+}
+
+fun IntRange.fullyContains(other: IntRange): Boolean {
+    return this.contains(other.first) && this.contains(other.last)
+}
+
+fun IntRange.overlaps(other: IntRange): Boolean {
+    return this.contains(other.first) || this.contains(other.last) || other.contains(this.first) || other.contains(this.last)
+}

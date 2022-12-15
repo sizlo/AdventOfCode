@@ -80,4 +80,74 @@ internal class ExtensionsTest {
 
         assertThrows<RuntimeException> { list.splitInHalf() }
     }
+
+    @Test
+    fun `test String to IntRange`() {
+        assertThat("2-345".toIntRange()).isEqualTo(2..345)
+        assertThrows<RuntimeException> { "-1-45".toIntRange() }
+    }
+
+    @Test
+    fun `test IntRange fully contains another`() {
+        // Fully contained
+        assertThat((1..5).fullyContains(2..4)).isTrue()
+        assertThat((1..5).fullyContains(1..5)).isTrue()
+
+        // Some before
+        assertThat((5..10).fullyContains(1..4)).isFalse()
+        assertThat((5..10).fullyContains(1..5)).isFalse()
+        assertThat((5..10).fullyContains(1..7)).isFalse()
+
+        // Some after
+        assertThat((5..10).fullyContains(11..15)).isFalse()
+        assertThat((5..10).fullyContains(10..15)).isFalse()
+        assertThat((5..10).fullyContains(7..15)).isFalse()
+
+        // Some before and after
+        assertThat((5..10).fullyContains(1..15)).isFalse()
+    }
+
+    @Test
+    fun `test IntRange overlaps another`() {
+        // Same range
+        assertThat((1..5).overlaps(1..5)).isTrue()
+
+        // lhs fully contains rhs
+        assertThat((1..5).overlaps(2..4)).isTrue()
+        assertThat((1..5).overlaps(1..4)).isTrue()
+        assertThat((1..5).overlaps(2..5)).isTrue()
+
+        // rhs fully contains lhs
+        assertThat((2..4).overlaps(1..5)).isTrue()
+        assertThat((1..4).overlaps(1..5)).isTrue()
+        assertThat((2..5).overlaps(1..5)).isTrue()
+
+        // lhs starts before rhs
+        assertThat((1..7).overlaps(5..10)).isTrue()
+        assertThat((1..5).overlaps(5..10)).isTrue()
+
+        // lhs ends after rhs
+        assertThat((7..15).overlaps(5..10)).isTrue()
+        assertThat((10..15).overlaps(5..10)).isTrue()
+
+        // rhs starts before lhs
+        assertThat((5..10).overlaps(1..7)).isTrue()
+        assertThat((5..10).overlaps(1..5)).isTrue()
+
+        // rhs ends after lhs
+        assertThat((5..10).overlaps(7..15)).isTrue()
+        assertThat((5..10).overlaps(10..15)).isTrue()
+
+        // lhs fully before rhs
+        assertThat((1..4).overlaps(5..10)).isFalse()
+
+        // lhs fully after rhs
+        assertThat((11..15).overlaps(5..10)).isFalse()
+
+        // rhs fully before lhs
+        assertThat((5..10).overlaps(1..4)).isFalse()
+
+        // rhs fully after lhs
+        assertThat((5..10).overlaps(11..15)).isFalse()
+    }
 }
