@@ -3,6 +3,7 @@ package advent.of.code.utils
 import assertk.assertThat
 import assertk.assertions.*
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 internal class ExtensionsTest {
 
@@ -61,5 +62,22 @@ internal class ExtensionsTest {
         assertThat(result[1]).isEqualTo("a")
         assertThat(result[2]).isEqualTo("b")
         assertThat(result[3]).isEqualTo("c")
+    }
+
+    @Test
+    fun `test splitting a list in half`() {
+        val list = listOf(1, 2, 3, 4)
+
+        val result = list.splitInHalf()
+
+        assertThat(result.first).containsExactlyInAnyOrder(1, 2)
+        assertThat(result.second).containsExactlyInAnyOrder(3, 4)
+    }
+
+    @Test
+    fun `throws error when attempting to split a list with an odd number of items  in half`() {
+        val list = listOf(1, 2, 3, 4, 5)
+
+        assertThrows<RuntimeException> { list.splitInHalf() }
     }
 }

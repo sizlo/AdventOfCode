@@ -21,6 +21,15 @@ fun List<String>.splitOnBlankLines(): List<List<String>> {
         .map { it.split("\n") }
 }
 
+fun <T> List<T>.splitInHalf(): Pair<List<T>, List<T>> {
+    if (this.size % 2 == 1) {
+        throw RuntimeException("Cannot split a list of an odd size in half, size: ${this.size}")
+    }
+
+    val parts = this.chunked(this.size / 2)
+    return Pair(parts[0], parts[1])
+}
+
 fun <T> Collection<T>.productOf(selector: (T) -> Long): Long {
     return this.fold(1L) { product, item -> product * selector(item) }
 }
