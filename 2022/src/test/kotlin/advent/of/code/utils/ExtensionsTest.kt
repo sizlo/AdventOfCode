@@ -18,7 +18,7 @@ internal class ExtensionsTest {
 
     @Test
     fun `test string list to int grid`() {
-        val stringList = listOf("123", "456", "789")
+        val stringList = listOf("123", "456", "789", "012")
 
         val intGrid = stringList.toIntGrid()
 
@@ -26,6 +26,34 @@ internal class ExtensionsTest {
             listOf(1, 2, 3),
             listOf(4, 5, 6),
             listOf(7, 8, 9),
+            listOf(0, 1, 2),
+        )
+    }
+
+    @Test
+    fun `test get int grid rows`() {
+        val stringList = listOf("123", "456", "789", "012")
+
+        val intGrid = stringList.toIntGrid()
+
+        assertThat(intGrid.getRows()).containsExactly(
+            listOf(1, 2, 3),
+            listOf(4, 5, 6),
+            listOf(7, 8, 9),
+            listOf(0, 1, 2),
+        )
+    }
+
+    @Test
+    fun `test get int grid columns`() {
+        val stringList = listOf("123", "456", "789", "012")
+
+        val intGrid = stringList.toIntGrid()
+
+        assertThat(intGrid.getColumns()).containsExactly(
+            listOf(1, 4, 7, 0),
+            listOf(2, 5, 8, 1),
+            listOf(3, 6, 9, 2),
         )
     }
 

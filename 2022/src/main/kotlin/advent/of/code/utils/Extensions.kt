@@ -14,6 +14,13 @@ fun List<String>.toIntGrid(transform: (Char) -> Int = {it.digitToInt()} ): IntGr
     }
 }
 
+fun IntGrid.getRows() = this
+
+fun IntGrid.getColumns(): IntGrid {
+    val width = this.first().size
+    return (0 until width).map { columnIndex -> this.map { row -> row[columnIndex] } }
+}
+
 fun List<String>.splitOnBlankLines(): List<List<String>> {
     return this
         .joinToString("\n")
