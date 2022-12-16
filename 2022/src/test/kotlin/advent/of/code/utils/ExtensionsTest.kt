@@ -150,4 +150,15 @@ internal class ExtensionsTest {
         // rhs fully after lhs
         assertThat((5..10).overlaps(11..15)).isFalse()
     }
+
+    @Test
+    fun `test collection has only unique contents`() {
+        assertThat(listOf(1, 2, 3, 4).hasOnlyUniqueContents()).isTrue()
+        assertThat(listOf('a', 'b', 'c', 'd').hasOnlyUniqueContents()).isTrue()
+        assertThat(listOf("aa", "bb", "cc", "dd").hasOnlyUniqueContents()).isTrue()
+
+        assertThat(listOf(1, 2, 3, 1).hasOnlyUniqueContents()).isFalse()
+        assertThat(listOf('a', 'b', 'c', 'a').hasOnlyUniqueContents()).isFalse()
+        assertThat(listOf("aa", "bb", "cc", "aa").hasOnlyUniqueContents()).isFalse()
+    }
 }

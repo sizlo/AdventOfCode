@@ -54,3 +54,7 @@ fun IntRange.fullyContains(other: IntRange): Boolean {
 fun IntRange.overlaps(other: IntRange): Boolean {
     return this.contains(other.first) || this.contains(other.last) || other.contains(this.first) || other.contains(this.last)
 }
+
+fun <T> Collection<T>.hasOnlyUniqueContents(): Boolean {
+    return this.distinct().size == this.size
+}
