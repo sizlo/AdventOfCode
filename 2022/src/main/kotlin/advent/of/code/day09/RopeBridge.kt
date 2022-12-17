@@ -39,7 +39,7 @@ class Knot {
 
 class RopeBridge(numKnots: Int) {
 
-    private val rope = (0 until numKnots).map { Knot() }
+    private val rope = List(numKnots) { Knot() }
     private val allPositionsTailHasVisited = mutableSetOf(rope.last().position)
 
     fun countAllPositionsTailVisits(moveInstructions: List<String>): Int {
