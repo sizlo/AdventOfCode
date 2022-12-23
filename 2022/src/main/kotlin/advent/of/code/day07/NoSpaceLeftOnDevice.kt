@@ -24,7 +24,7 @@ class Directory(name: String, parent: Directory?): File(0, name, parent) {
 abstract class Operation {
     companion object {
         fun fromString(commandWithOutput: String): Operation {
-            val lines = commandWithOutput.split("\n").filterNot { it.isBlank() }
+            val lines = commandWithOutput.lines().filterNot { it.isBlank() }
             val command = lines.first()
             return when {
                 command.startsWith("cd") -> CdOperation(command.split(" ").last())

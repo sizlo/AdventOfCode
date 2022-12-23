@@ -8,7 +8,7 @@ fun readInput(path: String): String {
 }
 
 fun readInputLines(path: String): List<String> {
-    return readInput(path).split("\n")
+    return readInput(path).lines()
 }
 
 fun readInputAsOneListOfIntegers(path: String): List<Int> {

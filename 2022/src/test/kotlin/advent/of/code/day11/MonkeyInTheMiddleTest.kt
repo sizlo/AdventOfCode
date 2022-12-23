@@ -39,13 +39,13 @@ class MonkeyInTheMiddleTest {
 
     @Test
     fun `test example input for part 1`() {
-        val result = MonkeyInTheMiddle(exampleInput).getMonkeyBusinessLevelAfterPlayingGame(Part.PART_1)
+        val result = MonkeyInTheMiddle(exampleInput, Part.PART_1).getMonkeyBusinessLevelAfterPlayingGame()
         assertThat(result).isEqualTo(10605)
     }
 
     @Test
     fun `test example input for part 2`() {
-        val result = MonkeyInTheMiddle(exampleInput).getMonkeyBusinessLevelAfterPlayingGame(Part.PART_2)
+        val result = MonkeyInTheMiddle(exampleInput, Part.PART_2).getMonkeyBusinessLevelAfterPlayingGame()
         assertThat(result).isEqualTo(2713310158L)
     }
 }

@@ -5,12 +5,11 @@ import advent.of.code.utils.productOf
 import advent.of.code.utils.readInput
 
 typealias MonkeyOperation = (Long) -> Long
-typealias MonkeyTest = (Long) -> Boolean
 
 data class Monkey(
     val items: MutableList<Long>,
     val operation: MonkeyOperation,
-    val test: MonkeyTest,
+    val testDivisor: Long,
     val throwToIfTestPasses: Int,
     val throwToIfTestFails: Int
 ) {
@@ -18,18 +17,20 @@ data class Monkey(
 
     companion object {
         fun fromString(input: String): Monkey {
-            val lines = input.split("\n")
+            val lines = input.lines()
 
             return Monkey(
                 getItems(lines[1]),
                 getOperation(lines[2]),
-                getTest(lines[3]),
+                getTestDivisor(lines[3]),
                 getThrowTo(lines[4]),
                 getThrowTo(lines[5]),
             )
         }
 
         private fun getItems(input: String) = input.split(": ").last().split(", ").map { it.toLong() }.toMutableList()
+        private fun getTestDivisor(input: String) = input.split(" ").last().toLong()
+        private fun getThrowTo(input: String) = input.split(" ").last().toInt()
 
         private fun getOperation(input: String): MonkeyOperation {
             val operationParts = input.split(" ").toMutableList()
@@ -48,27 +49,17 @@ data class Monkey(
                 }
             }
         }
-
-        private fun getTest(input: String): MonkeyTest {
-            if (!input.contains("divisible by")) throw RuntimeException("Unknown test type: $input")
-            val divisor = input.split(" ").last().toLong()
-            return { value: Long -> value % divisor == 0L }
-        }
-
-        private fun getThrowTo(input: String) = input.split(" ").last().toInt()
     }
 }
 
-class MonkeyInTheMiddle(input: String) {
+class MonkeyInTheMiddle(input: String, private val part: Part) {
     private val monkeys = input.split("\n\n").map { Monkey.fromString(it) }
+    private val commonMultiple = monkeys.productOf { it.testDivisor }
 
-    fun getMonkeyBusinessLevelAfterPlayingGame(part: Part): Long {
-        val (rounds, worryDivisor) = when(part) {
-            Part.PART_1 -> Pair(20, 3L)
-            Part.PART_2 -> Pair(10000, 1L)
-        }
+    fun getMonkeyBusinessLevelAfterPlayingGame(): Long {
+        val rounds = if (part == Part.PART_1) 20 else 10000
 
-        repeat(rounds) { performRound(worryDivisor) }
+        repeat(rounds) { performRound() }
 
         return monkeys
             .map { it.totalInspections }
@@ -77,19 +68,25 @@ class MonkeyInTheMiddle(input: String) {
             .productOf { it }
     }
 
-    private fun performRound(worryDivisor: Long) {
-        monkeys.forEach { takeTurn(it, worryDivisor) }
+    private fun performRound() {
+        monkeys.forEach { takeTurn(it) }
     }
 
-    private fun takeTurn(currentMonkey: Monkey, worryDivisor: Long) {
+    private fun takeTurn(currentMonkey: Monkey) {
         currentMonkey.items.forEach { oldWorryLevel ->
             currentMonkey.totalInspections++
-            val newWorryLevel = currentMonkey.operation(oldWorryLevel) / worryDivisor
-            val throwTo = when(currentMonkey.test(newWorryLevel)) {
+
+            val worryLevelAfterOperation = currentMonkey.operation(oldWorryLevel)
+            val worryLevelAfterAdjustment = when(part) {
+                Part.PART_1 -> worryLevelAfterOperation / 3
+                Part.PART_2 -> worryLevelAfterOperation % commonMultiple
+            }
+
+            val throwTo = when(worryLevelAfterAdjustment % currentMonkey.testDivisor == 0L) {
                 true -> currentMonkey.throwToIfTestPasses
                 false -> currentMonkey.throwToIfTestFails
             }
-            monkeys[throwTo].items.add(newWorryLevel)
+            monkeys[throwTo].items.add(worryLevelAfterAdjustment)
         }
 
         currentMonkey.items.removeAll { true }
@@ -98,7 +95,6 @@ class MonkeyInTheMiddle(input: String) {
 
 fun main() {
     val input = readInput("/day11/input.txt")
-    println(MonkeyInTheMiddle(input).getMonkeyBusinessLevelAfterPlayingGame(Part.PART_1)) // 62491
-    TODO("Getting overflows of the worry level values when running for all the rounds required in part 2")
-    println(MonkeyInTheMiddle(input).getMonkeyBusinessLevelAfterPlayingGame(Part.PART_2)) //
+    println(MonkeyInTheMiddle(input, Part.PART_1).getMonkeyBusinessLevelAfterPlayingGame()) // 62491
+    println(MonkeyInTheMiddle(input, Part.PART_2).getMonkeyBusinessLevelAfterPlayingGame()) // 17408399184
 }

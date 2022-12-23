@@ -25,7 +25,7 @@ fun List<String>.splitOnBlankLines(): List<List<String>> {
     return this
         .joinToString("\n")
         .split("\n\n")
-        .map { it.split("\n") }
+        .map { it.lines() }
 }
 
 fun <T> List<T>.splitInHalf(): Pair<List<T>, List<T>> {
