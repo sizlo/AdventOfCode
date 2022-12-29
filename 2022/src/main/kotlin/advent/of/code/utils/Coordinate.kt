@@ -1,5 +1,7 @@
 package advent.of.code.utils
 
+import kotlin.math.absoluteValue
+
 data class Coordinate(val x: Int, val y: Int) {
 
     constructor(input: String) : this(input.split(",").first().toInt(), input.split(",").last().toInt())
@@ -13,3 +15,5 @@ data class Coordinate(val x: Int, val y: Int) {
         ).filter { it.x >= minX && it.y >= minY && it.x <= maxX && it.y <= maxY }
     }
 }
+
+fun manhattanDistance(left: Coordinate, right: Coordinate) = (left.x - right.x).absoluteValue + (left.y - right.y).absoluteValue
