@@ -62,7 +62,7 @@ class BeaconExclusionZone(sensorData: List<String>) {
 
     // Because there is only one correct answer, it must be totally surrounded
     // by beacon exclusion zones, meaning we can limit our search to all the points
-    // one step outside og the beacon exclusion zones
+    // one step outside the beacon exclusion zones
     private fun findCoordinateOfDistressBeacon(maxXAndY: Int): Coordinate {
         val sensorLocations = sensors.map { it.location }
         val beaconLocations = sensors.map { it.closestBeaconLocation }
