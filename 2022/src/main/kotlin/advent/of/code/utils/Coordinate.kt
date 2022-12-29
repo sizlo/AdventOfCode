@@ -2,6 +2,8 @@ package advent.of.code.utils
 
 data class Coordinate(val x: Int, val y: Int) {
 
+    constructor(input: String) : this(input.split(",").first().toInt(), input.split(",").last().toInt())
+
     fun getNeighbours(minX: Int = 0, minY: Int = 0, maxX: Int = Int.MAX_VALUE, maxY: Int = Int.MAX_VALUE): List<Coordinate> {
         return listOf(
             this.copy(x = x - 1),

@@ -4,6 +4,7 @@ import advent.of.code.utils.Coordinate
 import advent.of.code.utils.readInputLines
 import java.lang.RuntimeException
 import kotlin.math.absoluteValue
+import kotlin.math.sign
 
 class Knot {
     var position = Coordinate(0, 0)
@@ -21,19 +22,14 @@ class Knot {
     fun catchUp(followPosition: Coordinate) {
         if (touching(followPosition)) return
 
-        val xStep = getStep(followPosition.x - position.x)
-        val yStep = getStep(followPosition.y - position.y)
+        val xStep = (followPosition.x - position.x).sign
+        val yStep = (followPosition.y - position.y).sign
         position = Coordinate(position.x + xStep, position.y + yStep)
     }
 
     private fun touching(otherPosition: Coordinate): Boolean {
         return (otherPosition.x - position.x).absoluteValue <= 1
                 && (otherPosition.y - position.y).absoluteValue <= 1
-    }
-
-    private fun getStep(distance: Int): Int {
-        if (distance == 0) return 0
-        return distance / distance.absoluteValue
     }
 }
 
